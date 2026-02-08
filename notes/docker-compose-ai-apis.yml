@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # LocalAI - 本地LLM服务
+  localai:
+    image: localai/localai:latest-cpu
+    container_name: localai-core
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./models:/models
+      - ./localai-data:/build/models
+    environment:
+      - MODELS_PATH=/models
+      - THREADS=4
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/readyz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # kimi-free-api - Moonshot AI接口
+  kimi-free-api:
+    image: vinlic/kimi-free-api:latest
+    container_name: kimi-writer
+    ports:
+      - "8000:8000"
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/v1/models"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # qwen-free-api - 通义千问接口
+  qwen-free-api:
+    image: vinlic/qwen-free-api:latest
+    container_name: qwen-analyst
+    ports:
+      - "8001:8000"
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/v1/models"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  default:
+    name: ai-apis-network

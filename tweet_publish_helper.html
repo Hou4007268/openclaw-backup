@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>推文发布助手</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f5f8fa;
+        }
+        .tweet-content {
+            background: white;
+            border: 1px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+        .instructions {
+            background: #e8f4f9;
+            border-left: 4px solid #1da1f2;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #1da1f2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #0d8bd9;
+        }
+        .copy-btn {
+            background-color: #17bf63;
+        }
+        .copy-btn:hover {
+            background-color: #119e4f;
+        }
+    </style>
+</head>
+<body>
+    <h1>推文发布助手</h1>
+    
+    <div class="instructions">
+        <strong>发布步骤：</strong>
+        <ol>
+            <li>点击下方"复制推文内容"按钮</li>
+            <li>手动打开 <a href="https://x.com/compose/post" target="_blank">X.com/compose/post</a></li>
+            <li>粘贴内容到推文编辑器</li>
+            <li>点击发布按钮</li>
+        </ol>
+    </div>
+    
+    <h2>推文2内容（下午15:00发布）</h2>
+    <div class="tweet-content" id="tweetContent">
+周末在家？来做个简单的风水自查吧！🏠
+
+1. 卧室：床正对镜子吗？
+2. 客厅：沙发有靠山吗？
+3. 厨房：灶台对水槽吗？
+4. 大门：一开门见什么？
+
+选一个你最关心的问题
+评论区告诉我，我会详细解答！
+
+#风水 #住宅风水 #周末 #自查 #互动
+    </div>
+    
+    <button onclick="copyToClipboard()" class="copy-btn">📋 复制推文内容</button>
+    <button onclick="window.open('https://x.com/compose/post', '_blank')">🌐 打开X发布页面</button>
+    
+    <script>
+        function copyToClipboard() {
+            const content = document.getElementById('tweetContent').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('推文内容已复制到剪贴板！');
+            }).catch(err => {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动选择并复制文本');
+            });
+        }
+    </script>
+</body>
+</html>
