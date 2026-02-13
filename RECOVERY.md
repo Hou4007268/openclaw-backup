@@ -44,7 +44,7 @@
 - ✅ Telegram频道连接
 - ✅ 代码代理kimi2.5配置
 - ✅ SSH密钥：`~/.ssh/id_rsa`
-- ✅ 自动备份系统（每30分钟检查）
+- ✅ 手动备份系统（节省token）
 
 ### 已知问题
 - ⚠️ 20:00 cron任务调度异常（时区问题）
@@ -158,42 +158,47 @@ git push origin master
 
 ---
 
-## 自动备份系统
+## 备份系统（手动模式）
 
-### 备份触发条件
-以下情况会自动推送到GitHub：
+### 备份策略
+**当前模式：手动备份** — 仅在需要时执行，节省token
 
-1. **重要文件变更**（必须备份）
-   - RECOVERY.md, AGENTS.md, SOUL.md, USER.md
-   - MEMORY.md, TOOLS.md, HEARTBEAT.md
+### 何时需要备份
+1. **重要配置变更**
+   - RECOVERY.md, AGENTS.md, SOUL.md, USER.md 修改后
+   - 新增或修改核心规则后
 
-2. **重要目录变更**
-   - memory/ - 每日工作记录
-   - notes/ - 笔记和草稿
-   - skills/ - 技能配置
+2. **工作内容保存**
+   - 完成当日工作日志后
+   - 新增笔记、草稿、技能配置后
 
-3. **配置文件变更**
-   - 所有 .md, .json 文件
-   - 环境配置文件
+3. **重要决策或任务完成后**
+   - 项目里程碑
+   - 关键配置变更
 
-### 备份频率
-- **检查间隔**：每30分钟
-- **静默运行**：无变更时不通知
-- **备份成功**：记录日志并通知
-- **备份失败**：立即通知主人
-
-### 手动触发备份
+### 手动备份命令
 ```bash
 cd /Users/yachaolailo/projects/openclaw-backup
 ./scripts/auto-backup.sh
 ```
 
+**备份脚本行为：**
+- 检查是否有重要文件变更
+- 有变更 → 自动commit并push
+- 无变更 → 记录日志，静默退出
+- 失败 → 显示错误信息
+
 ### 查看备份日志
 ```bash
-tail -f /Users/yachaolailo/projects/openclaw-backup/.backup.log
+tail -20 /Users/yachaolailo/projects/openclaw-backup/.backup.log
+```
+
+### GitHub仓库地址
+```
+https://github.com/Hou4007268/openclaw-backup
 ```
 
 ---
 
 *最后更新：2026-02-13*
-*版本：v1.2*
+*版本：v1.3（手动备份模式）*
