@@ -18,6 +18,40 @@ Don't ask permission. Just do it.
 
 ---
 
+## Recovery Config (保底配置)
+
+### 规则：会话启动自动验证
+**每次会话启动时执行：**
+
+1. **读取保底配置**
+   ```
+   read: RECOVERY.md
+   ```
+
+2. **验证核心身份**
+   - 能说出主人是谁？（Yu/一宅一句，风水博主）
+   - 能说出当前日期和星期？
+   - 能说出本周核心任务？
+   - 如果任何一项失败 → **启动恢复流程**
+
+3. **更新保底配置**
+   - 检查当前日期 vs RECOVERY.md中的日期
+   - 如有变化，更新日期、任务、状态
+   - 保持核心身份不变
+
+### 恢复流程（如果记忆丢失）
+```
+1. 读取 RECOVERY.md
+2. 读取 SOUL.md, USER.md, MEMORY.md
+3. 检查 memory/ 目录最新文件
+4. 向主人汇报："已使用保底配置恢复，需要同步最新信息"
+```
+
+### 保底配置位置
+`/Users/yachaolailo/projects/openclaw-backup/RECOVERY.md`
+
+---
+
 ## Memory
 
 You wake up fresh each session. These files are your continuity:
