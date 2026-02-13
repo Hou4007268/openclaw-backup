@@ -99,6 +99,47 @@ git push origin master
 
 ---
 
+## QMD Search (Local MCP Server)
+
+**Status:** ✅ Running (MCP HTTP + CLI available)
+
+**Configuration:**
+- Port: 8181 (MCP HTTP)
+- Index: ~/.cache/qmd/index.sqlite (3.4 MB)
+- Documents: 30 files, 49 vectors
+- Path: `~/.bun/install/global/node_modules/qmd/qmd`
+
+**CLI Commands:**
+```bash
+# 混合搜索（推荐）
+~/.bun/install/global/node_modules/qmd/qmd query "风水内容创作"
+
+# 关键词搜索
+~/.bun/install/global/node_modules/qmd/qmd search "关键词"
+
+# 向量搜索
+~/.bun/install/global/node_modules/qmd/qmd vsearch "如何写好风水故事"
+
+# 指定集合
+~/.bun/install/global/node_modules/qmd/qmd query "用户偏好" -c workspace
+
+# 查看状态
+~/.bun/install/global/node_modules/qmd/qmd status
+
+# 更新索引
+~/.bun/install/global/node_modules/qmd/qmd update
+```
+
+**Collections:**
+- `workspace` - 30 files (工作区所有内容)
+- `daily-logs` - 0 files (每日工作日志)
+
+**Index Updates:**
+- Manual: `qmd update` / `qmd embed`
+- Models: embeddinggemma-300M, qwen3-reranker-0.6b
+
+---
+
 ## Writing Preferences
 
 **Twitter Content:**
