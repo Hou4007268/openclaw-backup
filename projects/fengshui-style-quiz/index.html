@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 装修风格测试</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #ee9ca7 0%, #ffdde1 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 20px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .progress { text-align: center; color: #666; margin-bottom: 15px; }
+        
+        .question { font-size: 1.2rem; color: #333; margin-bottom: 20px; font-weight: 500; }
+        
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        
+        .option {
+            padding: 15px 20px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #555;
+        }
+        .option:hover { border-color: #ee9ca7; background: #fff5f6; }
+        .option.selected { border-color: #ee9ca7; background: #ee9ca7; color: white; }
+        
+        .nav { display: flex; gap: 10px; margin-top: 20px; }
+        .btn {
+            flex: 1; padding: 12px; border: none; border-radius: 10px;
+            font-size: 1rem; cursor: pointer;
+        }
+        .btn-prev { background: #eee; color: #666; }
+        .btn-next { background: linear-gradient(135deg, #ee9ca7 0%, #ffdde1 100%); color: white; }
+        
+        .result { text-align: center; }
+        .result h2 { color: #ee9ca7; font-size: 2rem; margin-bottom: 10px; }
+        .result .feature { color: #666; margin-bottom: 15px; }
+        .result .suit { background: #f5f5f5; padding: 15px; border-radius: 10px; margin-bottom: 15px; color: #555; }
+        .result .colors { color: #ee9ca7; font-weight: bold; }
+        
+        .color-box {
+            display: flex; justify-content: center; gap: 10px; margin: 20px 0;
+        }
+        .color-dot {
+            width: 40px; height: 40px; border-radius: 50%;
+            border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .restart {
+            background: linear-gradient(135deg, #ee9ca7 0%, #ffdde1 100%);
+            color: white; padding: 15px 30px; border: none;
+            border-radius: 25px; font-size: 1rem; cursor: pointer; margin-top: 20px;
+        }
+        
+        .loading { text-align: center; padding: 40px; display: none; }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid #ddd; border-top-color: #ee9ca7;
+            border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 装修风格测试</h1>
+        
+        <div class="card" id="quiz">
+            <div class="progress" id="progress">1 / 5</div>
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+            <div class="nav">
+                <button class="btn btn-prev" onclick="prev()">上一题</button>
+                <button class="btn btn-next" onclick="next()">下一题</button>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>AI 分析中...</p>
+        </div>
+        
+        <div class="card result" id="result" style="display: none;">
+            <h2 id="styleName"></h2>
+            <p class="feature" id="feature"></p>
+            <div class="suit"><strong>适合：</strong><br><span id="suit"></span></div>
+            <p><strong>推荐配色：</strong></p>
+            <div class="color-box" id="colorBox"></div>
+            <p class="colors" id="colors"></p>
+            <button class="restart" onclick="restart()">重新测试</button>
+        </div>
+    </div>
+
+    <script>
+        let questions = [];
+        let current = 0;
+        let answers = [];
+        
+        // 模拟题目数据
+        questions = [
+            {question: "你更喜欢什么样的空间氛围？", options: ["简洁明亮", "温馨舒适", "大气豪华", "浪漫清新"]},
+            {question: "你喜欢的颜色是？", options: ["黑白灰", "原木色", "深红色", "蓝色白色"]},
+            {question: "你喜欢的家具风格？", options: ["简洁线条", "自然木质", "雕花装饰", "曲线造型"]},
+            {question: "你家采光怎么样？", options: ["很好", "一般", "较差"]},
+            {question: "装修预算更看重？", options: ["性价比", "品质感", "自然环保"]}
+        ];
+        
+        function render() {
+            document.getElementById('progress').textContent = `${current + 1} / ${questions.length}`;
+            document.getElementById('question').textContent = questions[current].question;
+            
+            const opts = document.getElementById('options');
+            opts.innerHTML = '';
+            questions[current].options.forEach((text, i) => {
+                const div = document.createElement('div');
+                div.className = 'option' + (answers[current] === i ? ' selected' : '');
+                div.textContent = text;
+                div.onclick = () => select(i);
+                opts.appendChild(div);
+            });
+            
+            document.querySelector('.btn-prev').style.visibility = current === 0 ? 'hidden' : 'visible';
+            document.querySelector('.btn-next').textContent = current === questions.length - 1 ? '查看结果' : '下一题';
+        }
+        
+        function select(i) {
+            answers[current] = i;
+            render();
+        }
+        
+        function next() {
+            if (answers[current] === undefined) return alert('请选择一个答案');
+            if (current < questions.length - 1) {
+                current++;
+                render();
+            } else {
+                showResult();
+            }
+        }
+        
+        function prev() {
+            if (current > 0) { current--; render(); }
+        }
+        
+        async function showResult() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            
+            try {
+                const res = await fetch('http://localhost:5005/submit', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({answers: answers})
+                });
+                const data = await res.json();
+                
+                document.getElementById('styleName').textContent = data.style_name;
+                document.getElementById('feature').textContent = data.feature;
+                document.getElementById('suit').textContent = data.suit;
+                document.getElementById('colors').textContent = data.colors;
+                
+                const colorMap = {'白': '#fff', '黑': '#333', '灰': '#999', '红': '#d32f2f', '蓝': '#1976d2', '黄': '#fbc02d', '木': '#8d6e63', '米': '#f5f5dc', '金': '#ffd700', '深': '#333'};
+                const colorBox = document.getElementById('colorBox');
+                colorBox.innerHTML = '';
+                (data.colors_list || []).forEach(c => {
+                    const dot = document.createElement('div');
+                    dot.className = 'color-dot';
+                    dot.style.background = colorMap[c[0]] || '#ccc';
+                    colorBox.appendChild(dot);
+                });
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+            } catch(e) {
+                alert('出错了');
+                document.getElementById('quiz').style.display = 'block';
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+        
+        function restart() {
+            current = 0;
+            answers = [];
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            render();
+        }
+        
+        render();
+    </script>
+</body>
+</html>
