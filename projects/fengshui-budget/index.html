@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 装修预算规划</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 30px; font-size: 2rem; }
+        
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .card h2 { color: #333; margin-bottom: 15px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; color: #333; margin-bottom: 8px; font-weight: 500; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            width: 100%;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn:hover { transform: scale(1.02); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .result { display: none; }
+        .budget-total {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .budget-total .label { opacity: 0.8; font-size: 0.9rem; }
+        .budget-total .amount { font-size: 2rem; font-weight: bold; margin-top: 10px; }
+        
+        .room-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .room-item h3 { color: #11998e; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .room-item .budget { font-weight: bold; color: #38ef7d; }
+        .room-item ul { color: #666; font-size: 0.9rem; padding-left: 20px; }
+        
+        .tips {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 0 10px 10px 0;
+            color: #856404;
+        }
+        
+        .loading { text-align: center; padding: 40px; display: none; }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: #11998e;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 装修预算规划</h1>
+        
+        <div class="card">
+            <h2>输入房屋信息</h2>
+            <div class="form-group">
+                <label>房屋面积（平米）</label>
+                <input type="number" id="area" value="100" min="30" max="500">
+            </div>
+            <div class="form-group">
+                <label>户型</label>
+                <select id="roomType">
+                    <option value="一室一厅">一室一厅</option>
+                    <option value="两室一厅">两室一厅</option>
+                    <option value="两室两厅">两室两厅</option>
+                    <option value="三室一厅">三室一厅</option>
+                    <option value="三室两厅" selected>三室两厅</option>
+                    <option value="四室两厅">四室两厅</option>
+                    <option value="别墅">别墅</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>装修风格</label>
+                <select id="style">
+                    <option value="现代简约" selected>现代简约</option>
+                    <option value="北欧风">北欧风</option>
+                    <option value="中式">中式</option>
+                    <option value="日式">日式</option>
+                    <option value="欧式">欧式</option>
+                    <option value="地中海">地中海</option>
+                </select>
+            </div>
+            <button class="btn" onclick="calculate()" id="submitBtn">生成预算方案</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>AI 正在计算预算...</p>
+        </div>
+
+        <div class="result" id="result">
+            <div class="budget-total">
+                <div class="label">💰 建议总体预算</div>
+                <div class="amount" id="totalBudget">-</div>
+            </div>
+            
+            <div class="card">
+                <h2>📊 各空间预算分配</h2>
+                <div id="rooms"></div>
+            </div>
+            
+            <div class="card">
+                <h2>🛒 主材建议</h2>
+                <ul id="materials"></ul>
+            </div>
+            
+            <div class="card">
+                <h2>🪑 家具家电</h2>
+                <ul id="furniture"></ul>
+            </div>
+            
+            <div class="tips" id="tips"></div>
+        </div>
+    </div>
+
+    <script>
+        async function calculate() {
+            const area = document.getElementById('area').value;
+            const roomType = document.getElementById('roomType').value;
+            const style = document.getElementById('style').value;
+            
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+
+            try {
+                const response = await fetch(
+                    `http://localhost:5003/budget?area=${area}&room=${roomType}&style=${style}`
+                );
+                const data = await response.json();
+                showResult(data);
+            } catch (e) {
+                alert('计算失败，请稍后重试');
+            }
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function showResult(data) {
+            document.getElementById('totalBudget').textContent = data.total_budget || '-';
+            
+            // 各空间
+            const roomsHtml = ['living_room', 'bedroom', 'kitchen', 'bathroom']
+                .map(key => {
+                    const room = data[key] || {};
+                    const name = {living_room: '客厅', bedroom: '卧室', kitchen: '厨房', bathroom: '卫生间'}[key];
+                    return `
+                        <div class="room-item">
+                            <h3>${name} <span class="budget">${room.budget || '-'}</span></h3>
+                            <ul>${(room.items || []).map(i => `<li>${i}</li>`).join('')}</ul>
+                        </div>
+                    `;
+                }).join('');
+            document.getElementById('rooms').innerHTML = roomsHtml;
+            
+            // 主材
+            document.getElementById('materials').innerHTML = 
+                (data.main_materials || []).map(m => `<li>${m}</li>`).join('');
+            
+            // 家具
+            document.getElementById('furniture').innerHTML = 
+                (data.furniture || []).map(f => `<li>${f}</li>`).join('');
+            
+            // 建议
+            document.getElementById('tips').innerHTML = 
+                '<strong>💡 小贴士：</strong><br>' + (data.tips || []).join('<br>');
+
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
