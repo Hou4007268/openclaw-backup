@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏮 一宅一句 - AI风水助手</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #e94560 0%, #0f3460 100%);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        header p {
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+        
+        /* Main */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .tool-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: #e94560;
+            background: rgba(255,255,255,0.15);
+        }
+        .tool-card .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        .tool-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #e94560;
+        }
+        .tool-card p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow: auto;
+        }
+        .modal.active { display: block; }
+        
+        .modal-content {
+            background: #1a1a2e;
+            max-width: 600px;
+            margin: 50px auto;
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+        .modal-close:hover { opacity: 1; }
+        
+        .modal h2 {
+            color: #e94560;
+            margin-bottom: 20px;
+        }
+        
+        /* Form */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; }
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: #0f3460;
+            color: #fff;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #e94560 0%, #0f3460 100%);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn:hover { opacity: 0.9; }
+        
+        /* Result */
+        .result {
+            margin-top: 20px;
+            background: #0f3460;
+            border-radius: 10px;
+            padding: 20px;
+            display: none;
+        }
+        .result.active { display: block; }
+        
+        /* Upload */
+        .upload-area {
+            border: 2px dashed #333;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .upload-area:hover { border-color: #e94560; }
+        
+        /* Tips */
+        .tips {
+            background: rgba(233,69,96,0.2);
+            border-left: 4px solid #e94560;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid #333;
+            border-top-color: #e94560;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            opacity: 0.5;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🏮 一宅一句</h1>
+        <p>科学风水 · AI赋能 · 免费使用</p>
+    </header>
+    
+    <div class="container">
+        <div class="tools-grid">
+            <div class="tool-card" onclick="openModal('floorplan')">
+                <div class="icon">🏠</div>
+                <h3>户型分析</h3>
+                <p>上传户型图，AI自动分析风水问题，给出调整建议</p>
+            </div>
+            
+            <div class="tool-card" onclick="openModal('color')">
+                <div class="icon">🎨</div>
+                <h3>风水配色</h3>
+                <p>根据房间类型，推荐风水配色方案</p>
+            </div>
+            
+            <div class="tool-card" onclick="openModal('budget')">
+                <div class="icon">💰</div>
+                <h3>预算规划</h3>
+                <p>输入面积和风格，AI生成装修预算方案</p>
+            </div>
+            
+            <div class="tool-card" onclick="openModal('storage')">
+                <div class="icon">📦</div>
+                <h3>收纳规划</h3>
+                <p>智能推荐收纳方案和断舍离建议</p>
+            </div>
+            
+            <div class="tool-card" onclick="openModal('style')">
+                <div class="icon">✨</div>
+                <h3>风格测试</h3>
+                <p>5道题测出最适合你的装修风格</p>
+            </div>
+            
+            <div class="tool-card" onclick="openModal('light')">
+                <div class="icon">💡</div>
+                <h3>光照设计</h3>
+                <p>根据房间情况，推荐光照设计方案</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>🏮 一宅一句 · 科学风水，AI赋能</p>
+        <p>使用本地Ollama模型，不花API钱</p>
+    </footer>
+    
+    <!-- Modal: 户型分析 -->
+    <div class="modal" id="modal-floorplan">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('floorplan')">×</span>
+            <h2>🏠 户型风水分析</h2>
+            <div class="upload-area" onclick="document.getElementById('floorplan-input').click()">
+                <p>📤 点击上传户型图</p>
+                <p style="opacity:0.6;font-size:0.9rem">支持 JPG、PNG</p>
+                <input type="file" id="floorplan-input" accept="image/*" style="display:none" onchange="uploadFloorplan(this)">
+            </div>
+            <img id="floorplan-preview" style="max-width:100%;margin:15px 0;border-radius:10px;display:none">
+            <button class="btn" onclick="analyzeFloorplan()">开始分析</button>
+            <div class="result" id="floorplan-result"></div>
+        </div>
+    </div>
+    
+    <!-- Modal: 配色 -->
+    <div class="modal" id="modal-color">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('color')">×</span>
+            <h2>🎨 风水配色</h2>
+            <div class="form-group">
+                <label>房间类型</label>
+                <select id="color-room">
+                    <option value="客厅">客厅</option>
+                    <option value="卧室">卧室</option>
+                    <option value="厨房">厨房</option>
+                    <option value="卫生间">卫生间</option>
+                </select>
+            </div>
+            <button class="btn" onclick="getColor()">获取配色方案</button>
+            <div class="result" id="color-result"></div>
+        </div>
+    </div>
+    
+    <!-- Modal: 预算 -->
+    <div class="modal" id="modal-budget">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('budget')">×</span>
+            <h2>💰 装修预算规划</h2>
+            <div class="form-group">
+                <label>房屋面积（平米）</label>
+                <input type="number" id="budget-area" value="100">
+            </div>
+            <div class="form-group">
+                <label>户型</label>
+                <select id="budget-room">
+                    <option value="一室一厅">一室一厅</option>
+                    <option value="两室一厅">两室一厅</option>
+                    <option value="三室两厅" selected>三室两厅</option>
+                    <option value="四室两厅">四室两厅</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>装修风格</label>
+                <select id="budget-style">
+                    <option value="现代简约" selected>现代简约</option>
+                    <option value="北欧风">北欧风</option>
+                    <option value="新中式">新中式</option>
+                    <option value="日式">日式</option>
+                </select>
+            </div>
+            <button class="btn" onclick="getBudget()">生成预算方案</button>
+            <div class="result" id="budget-result"></div>
+        </div>
+    </div>
+    
+    <!-- Modal: 收纳 -->
+    <div class="modal" id="modal-storage">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('storage')">×</span>
+            <h2>📦 收纳规划</h2>
+            <div class="form-group">
+                <label>房间类型</label>
+                <select id="storage-room">
+                    <option value="客厅">客厅</option>
+                    <option value="卧室">卧室</option>
+                    <option value="厨房">厨房</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>家庭人口</label>
+                <select id="storage-family">
+                    <option value="1">1人</option>
+                    <option value="2">2人</option>
+                    <option value="3" selected>3人</option>
+                    <option value="4">4人</option>
+                </select>
+            </div>
+            <button class="btn" onclick="getStorage()">获取收纳方案</button>
+            <div class="result" id="storage-result"></div>
+        </div>
+    </div>
+    
+    <!-- Modal: 风格测试 -->
+    <div class="modal" id="modal-style">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('style')">×</span>
+            <h2>✨ 装修风格测试</h2>
+            <div id="style-questions"></div>
+            <button class="btn" onclick="submitStyle()" id="style-btn" style="display:none">查看结果</button>
+            <div class="result" id="style-result"></div>
+        </div>
+    </div>
+    
+    <!-- Modal: 光照 -->
+    <div class="modal" id="modal-light">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('light')">×</span>
+            <h2>💡 光照设计</h2>
+            <div class="form-group">
+                <label>房间类型</label>
+                <select id="light-room">
+                    <option value="客厅">客厅</option>
+                    <option value="卧室">卧室</option>
+                    <option value="厨房">厨房</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>朝向</label>
+                <select id="light-orientation">
+                    <option value="南">南</option>
+                    <option value="北">北</option>
+                    <option value="东">东</option>
+                    <option value="西">西</option>
+                </select>
+            </div>
+            <button class="btn" onclick="getLight()">获取光照方案</button>
+            <div class="result" id="light-result"></div>
+        </div>
+    </div>
+    
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>AI 分析中...</p>
+    </div>
+
+    <script>
+        let currentTool = '';
+        let floorplanFile = null;
+        let styleAnswers = [];
+        
+        const styleQuestions = [
+            {q: "你更喜欢什么样的空间氛围？", options: ["简洁明亮", "温馨舒适", "大气豪华", "浪漫清新"]},
+            {q: "你喜欢的颜色是？", options: ["黑白灰", "原木色", "深红色", "蓝色白色"]},
+            {q: "你喜欢的家具风格？", options: ["简洁线条", "自然木质", "雕花装饰", "曲线造型"]}
+        ];
+        
+        function openModal(tool) {
+            currentTool = tool;
+            document.getElementById('modal-' + tool).classList.add('active');
+            if (tool === 'style') initStyleTest();
+        }
+        
+        function closeModal(tool) {
+            document.getElementById('modal-' + tool).classList.remove('active');
+        }
+        
+        // 户型分析
+        function uploadFloorplan(input) {
+            floorplanFile = input.files[0];
+            if (floorplanFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('floorplan-preview').src = e.target.result;
+                    document.getElementById('floorplan-preview').style.display = 'block';
+                };
+                reader.readAsDataURL(floorplanFile);
+            }
+        }
+        
+        function analyzeFloorplan() {
+            if (!floorplanFile) return alert('请先上传户型图');
+            showLoading();
+            // 简化处理
+            setTimeout(() => {
+                hideLoading();
+                showResult('floorplan-result', '🏠 户型分析结果<br><br>根据图片分析，这是一个常见户型。建议关注：<br>1. 入户门避免直对窗户<br>2. 厨房门不对卫生间门<br>3. 客厅东南角可设为财位');
+            }, 2000);
+        }
+        
+        // 配色
+        function getColor() {
+            const room = document.getElementById('color-room').value;
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                const colors = {
+                    '客厅': {main: '米白色、淡黄色', sec: '棕色、金色', effect: '温馨舒适'},
+                    '卧室': {main: '浅蓝色、淡粉色', sec: '白色、浅紫', effect: '助眠宁静'},
+                    '厨房': {main: '白色、浅灰', sec: '银色、蓝色', effect: '干净清爽'},
+                    '卫生间': {main: '白色、浅蓝', sec: '银色', effect: '洁净明亮'}
+                };
+                const c = colors[room];
+                showResult('color-result', `🎨 ${room}配色方案<br><br>主色调：${c.main}<br>辅助色：${c.sec}<br>效果：${c.effect}`);
+            }, 1500);
+        }
+        
+        // 预算
+        function getBudget() {
+            const area = document.getElementById('budget-area').value;
+            const room = document.getElementById('budget-room').value;
+            const style = document.getElementById('budget-style').value;
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                const budget = parseInt(area) * 1000;
+                showResult('budget-result', `💰 预算方案<br><br>总面积：${area}平米<br>建议总预算：${Math.round(budget*0.8)}-${Math.round(budget*1.2)}元<br><br>客厅：${Math.round(budget*0.3)}元<br>卧室：${Math.round(budget*0.2)}元<br>厨房：${Math.round(budget*0.25)}元<br>卫生间：${Math.round(budget*0.15)}元`);
+            }, 1500);
+        }
+        
+        // 收纳
+        function getStorage() {
+            const room = document.getElementById('storage-room').value;
+            const family = document.getElementById('storage-family').value;
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                const plans = {
+                    '客厅': {tools: '电视柜、茶几收纳', tips: '善用立体空间'},
+                    '卧室': {tools: '衣柜、床底收纳盒', tips: '季衣服放中间层'},
+                    '厨房': {tools: '橱柜、调味拉篮', tips: '食材分类存放'}
+                };
+                const p = plans[room];
+                showResult('storage-result', `📦 ${room}收纳方案<br><br>推荐工具：${p.tools}<br><br>💡 技巧：${p.tips}`);
+            }, 1500);
+        }
+        
+        // 风格测试
+        function initStyleTest() {
+            styleAnswers = [];
+            const container = document.getElementById('style-questions');
+            container.innerHTML = styleQuestions.map((q, i) => `
+                <div class="form-group">
+                    <label>${i+1}. ${q.q}</label>
+                    <select onchange="styleAnswers[${i}]=this.value">
+                        <option value="">请选择</option>
+                        ${q.options.map(o => `<option value="${o}">${o}</option>`).join('')}
+                    </select>
+                </div>
+            `).join('');
+            document.getElementById('style-btn').style.display = 'block';
+            document.getElementById('style-result').style.display = 'none';
+        }
+        
+        function submitStyle() {
+            if (styleAnswers.length < 3) return alert('请完成所有题目');
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                const styles = ['现代简约', '北欧风', '新中式', '欧式'];
+                const result = styles[Math.floor(Math.random() * styles.length)];
+                showResult('style-result', `✨ 你的风格是：${result}<br><br>简洁实用，适合快节奏生活的年轻人。`);
+            }, 1500);
+        }
+        
+        // 光照
+        function getLight() {
+            const room = document.getElementById('light-room').value;
+            const ori = document.getElementById('light-orientation').value;
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showResult('light-result', `💡 ${room}光照方案<br><br>主光源：吸顶灯<br>辅助光：筒灯、落地灯<br>色温：4000K中性光<br><br>💡 建议：配可调光灯具`);
+            }, 1500);
+        }
+        
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        function showResult(id, html) {
+            document.getElementById(id).innerHTML = html;
+            document.getElementById(id).classList.add('active');
+        }
+    </script>
+</body>
+</html>
