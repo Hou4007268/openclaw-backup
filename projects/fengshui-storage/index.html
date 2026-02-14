@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📦 储物收纳规划</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { text-align: center; margin-bottom: 30px; color: #2c3e50; }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h2 { color: #2c3e50; margin-bottom: 15px; font-size: 1.2rem; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; color: #555; margin-bottom: 8px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 12px;
+            border: 2px solid #ddd; border-radius: 10px; font-size: 1rem;
+        }
+        
+        .btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none; padding: 15px;
+            border-radius: 10px; color: white;
+            font-size: 1.1rem; cursor: pointer;
+        }
+        .btn:hover { transform: scale(1.02); }
+        
+        .result { display: none; }
+        .result-card {
+            background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 15px;
+        }
+        .result-card h3 { color: #667eea; margin-bottom: 12px; }
+        .result-card ul { padding-left: 20px; color: #555; }
+        .result-card li { margin-bottom: 8px; }
+        
+        .tips {
+            background: #e8f5e9; border-left: 4px solid #4caf50;
+            padding: 15px; border-radius: 0 10px 10px 0; color: #2e7d32;
+        }
+        
+        .donate {
+            background: #fff3e0; border-left: 4px solid #ff9800;
+            padding: 15px; border-radius: 0 10px 10px 0; color: #e65100;
+        }
+        
+        .loading { text-align: center; padding: 40px; display: none; }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 4px solid #ddd; border-top-color: #667eea;
+            border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 储物收纳规划</h1>
+        
+        <div class="card">
+            <h2>输入房间信息</h2>
+            <div class="form-group">
+                <label>房间类型</label>
+                <select id="room">
+                    <option value="客厅">客厅</option>
+                    <option value="卧室">卧室</option>
+                    <option value="厨房">厨房</option>
+                    <option value="卫生间">卫生间</option>
+                    <option value="书房">书房</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>房间面积（平米）</label>
+                <input type="number" id="area" value="20">
+            </div>
+            <div class="form-group">
+                <label>家庭人口</label>
+                <select id="family">
+                    <option value="1">1人</option>
+                    <option value="2">2人</option>
+                    <option value="3" selected>3人</option>
+                    <option value="4">4人</option>
+                    <option value="5">5人以上</option>
+                </select>
+            </div>
+            <button class="btn" onclick="getPlan()">生成收纳方案</button>
+        </div>
+
+        <div class="loading" id="loading"><div class="spinner"></div><p>AI 规划中...</p></div>
+
+        <div class="result" id="result">
+            <div class="result-card">
+                <h3>🗄️ 推荐收纳工具</h3>
+                <ul id="tools"></ul>
+            </div>
+            <div class="result-card">
+                <h3>📍 收纳位置</h3>
+                <ul id="locations"></ul>
+            </div>
+            <div class="tips" id="tips"></div>
+            <div class="donate" id="donate"></div>
+        </div>
+    </div>
+
+    <script>
+        async function getPlan() {
+            const room = document.getElementById('room').value;
+            const area = document.getElementById('area').value;
+            const family = document.getElementById('family').value;
+            
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+
+            try {
+                const res = await fetch(`http://localhost:5004/plan?room=${room}&area=${area}&family=${family}`);
+                const data = await res.json();
+                show(data);
+            } catch(e) { alert('失败'); }
+
+            document.getElementById('loading').style.display = 'none';
+        }
+        function show(data) {
+            document.getElementById('tools').innerHTML = (data.tools||[]).map(t=>`<li>${t}</li>`).join('');
+            document.getElementById('locations').innerHTML = (data.locations||[]).map(l=>`<li>${l}</li>`).join('');
+            document.getElementById('tips').innerHTML = '<strong>💡 收纳技巧：</strong><br>' + (data.tips||[]).join('<br>');
+            document.getElementById('donate').innerHTML = '<strong>🧹 断舍离：</strong><br>' + (data.donate||[]).join('<br>');
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
