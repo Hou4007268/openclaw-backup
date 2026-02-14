@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 风水配色助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        .room-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .room-btn {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: #fff;
+            color: #333;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .room-btn:hover {
+            border-color: #667eea;
+        }
+        .room-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border-color: transparent;
+        }
+        .btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: scale(1.02);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .result {
+            display: none;
+        }
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .color-item {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            color: #333;
+        }
+        .color-swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            border: 3px solid #fff;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        .color-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .color-meaning {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .effect {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .effect-title {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+        .effect-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .tips {
+            background: rgba(255,193,7,0.2);
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 风水配色助手</h1>
+        
+        <div class="card">
+            <h2>选择房间类型</h2>
+            <div class="room-selector">
+                <button class="room-btn active" onclick="selectRoom('客厅')">客厅</button>
+                <button class="room-btn" onclick="selectRoom('卧室')">卧室</button>
+                <button class="room-btn" onclick="selectRoom('厨房')">厨房</button>
+                <button class="room-btn" onclick="selectRoom('卫生间')">卫生间</button>
+            </div>
+            <button class="btn" onclick="getRecommendation()" id="submitBtn">获取风水配色</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>AI 正在分析风水配色...</p>
+        </div>
+
+        <div class="card result" id="result">
+            <h2>🎨 风水配色建议</h2>
+            
+            <div class="tips">
+                💡 提示：以下配色基于风水原理，仅供参考
+            </div>
+
+            <h3 style="color:#333;margin:15px 0;">主色调</h3>
+            <div class="color-grid" id="mainColors"></div>
+            
+            <h3 style="color:#333;margin:15px 0;">辅助色</h3>
+            <div class="color-grid" id="secondaryColors"></div>
+            
+            <div class="effect">
+                <div class="effect-title">✨ 整体效果</div>
+                <div class="effect-text" id="effect"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedRoom = '客厅';
+        
+        // 颜色映射到实际颜色
+        const colorMap = {
+            '米白色': '#f5f5dc',
+            '淡黄色': '#fff8dc',
+            '浅灰色': '#d3d3d3',
+            '棕色': '#8b4513',
+            '金色': '#ffd700',
+            '浅蓝色': '#add8e6',
+            '淡粉色': '#ffb6c1',
+            '浅紫色': '#e6e6fa',
+            '白色': '#ffffff',
+            '淡绿色': '#90ee90',
+            '银色': '#c0c0c0',
+            '灰色': '#808080',
+            '蓝色': '#4169e1',
+            '透明色': 'rgba(255,255,255,0.5)'
+        };
+
+        function selectRoom(room) {
+            selectedRoom = room;
+            document.querySelectorAll('.room-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.textContent === room) btn.classList.add('active');
+            });
+        }
+
+        function getRandomColor() {
+            const colors = ['#f5f5dc', '#fff8dc', '#d3d3d3', '#8b4513', '#ffd700', 
+                          '#add8e6', '#ffb6c1', '#e6e6fa', '#ffffff', '#90ee90',
+                          '#c0c0c0', '#808080', '#4169e1'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        async function getRecommendation() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+
+            try {
+                const response = await fetch(`http://localhost:5002/recommend?room=${selectedRoom}`);
+                const data = await response.json();
+                showResult(data);
+            } catch (error) {
+                alert('获取失败，请稍后重试');
+            }
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function showResult(data) {
+            // 主色调
+            const mainContainer = document.getElementById('mainColors');
+            mainContainer.innerHTML = '';
+            data.main_colors.forEach((color, i) => {
+                const swatchColor = colorMap[color] || getRandomColor();
+                mainContainer.innerHTML += `
+                    <div class="color-item">
+                        <div class="color-swatch" style="background:${swatchColor}"></div>
+                        <div class="color-name">${color}</div>
+                        <div class="color-meaning">${data.meanings[i] || ''}</div>
+                    </div>
+                `;
+            });
+
+            // 辅助色
+            const secContainer = document.getElementById('secondaryColors');
+            secContainer.innerHTML = '';
+            data.secondary_colors.forEach(color => {
+                const swatchColor = colorMap[color] || getRandomColor();
+                secContainer.innerHTML += `
+                    <div class="color-item">
+                        <div class="color-swatch" style="background:${swatchColor}"></div>
+                        <div class="color-name">${color}</div>
+                    </div>
+                `;
+            });
+
+            // 效果
+            document.getElementById('effect').textContent = data.effect;
+
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
