@@ -1,20 +1,20 @@
-# 🎨 风水配色助手
+# 🏠 户型风水分析助手
 
-基于 Ollama 本地模型开发的家居风水配色工具。
+基于 Ollama 本地模型开发的户型风水分析工具。
 
 ## 功能
 
-- 选择房间类型（客厅、卧室、厨房、卫生间）
-- AI 根据风水原理推荐配色方案
-- 显示主色调和辅助色
-- 说明每个颜色的风水寓意
-- 本地运行，不花 API 钱
+- 📤 上传户型图（支持 JPG、PNG）
+- 🤖 AI 自动识别门窗、厨卫位置
+- 🔮 分析风水问题（穿堂煞、对门煞等）
+- 💡 给出调整建议
+- 💰 推荐财位
 
 ## 技术栈
 
 - **前端**: HTML + CSS + JavaScript
 - **后端**: Python Flask
-- **AI模型**: Ollama qwen2.5:latest
+- **AI模型**: Ollama gemma3:4b（本地运行，无需API）
 
 ## 快速开始
 
@@ -23,6 +23,11 @@
 ```bash
 ollama serve
 ollama list
+```
+
+确保已安装 gemma3:4b：
+```bash
+ollama pull gemma3:4b
 ```
 
 ### 2. 安装依赖
@@ -39,36 +44,26 @@ python server.py
 
 ### 4. 访问
 
-打开浏览器：`http://localhost:5002`
+打开浏览器访问：`http://localhost:5000`
 
 ## 项目结构
 
 ```
-fengshui-color-picker/
+fengshui-floorplan/
 ├── index.html      # 前端页面
-├── server.py       # Flask 后端
+├── server.py      # Flask 后端
 ├── requirements.txt
 └── README.md
 ```
 
-## 使用示例
+## 使用说明
 
-```
-# 获取客厅风水配色
-curl "http://localhost:5002/recommend?room=客厅"
-```
+1. 打开网页，点击上传户型图
+2. 点击"开始分析"
+3. AI 会自动分析并给出风水建议
 
-返回 JSON：
-```json
-{
-    "main_colors": ["米白色", "淡黄色", "浅灰色"],
-    "secondary_colors": ["棕色", "金色"],
-    "meanings": ["温馨", "活力", "稳重"],
-    "effect": "温馨舒适的待客空间",
-    "room": "客厅"
-}
-```
+## 注意事项
 
-## 免费！
-
-使用本地 Ollama 模型，无需 API Key，不花一分钱。
+- 首次分析可能需要10-30秒（取决于图片复杂度）
+- 使用本地模型，无需联网，不消耗API额度
+- 如果分析结果不理想，可以调整 server.py 中的 prompt

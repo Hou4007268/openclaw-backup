@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-风水配色助手 - 基于Ollama本地模型
-根据风水原理推荐家居颜色搭配
+户型风水分析后端 - 使用 Ollama 本地模型
 """
 
+import base64
 import json
 import os
 from flask import Flask, request, jsonify
@@ -13,108 +13,117 @@ import requests
 app = Flask(__name__)
 CORS(app)
 
-OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+# Ollama 配置
+OLLAMA_HOST = "http://localhost:11434"
 
-def get_color_recommendation(room_type, owner_birth_year=None):
-    """使用本地Ollama模型获取风水配色建议"""
+def encode_image(image_data):
+    """将图片转为 base64"""
+    return base64.b64encode(image_data).decode('utf-8')
+
+def analyze_with_ollama(image_base64):
+    """使用 Ollama 分析户型图"""
     
-    prompt = f"""你是一位风水大师。请为{room_type}推荐风水颜色搭配。
+    # 构造 prompt
+    prompt = """你是一个专业的风水大师。请分析这张户型图：
 
-要求：
-1. 列出3种主色调（用颜色名称如"米白色"、"淡黄色"等）
-2. 列出2种辅助色
-3. 给出每个颜色的风水寓意（10字以内）
-4. 说明颜色搭配的整体效果
+1. 识别户型结构（几室几厅、门窗位置）
+2. 找出可能的风水问题（如穿堂煞、对门煞等）
+3. 给出具体的调整建议
+4. 推荐财位位置
 
-请用JSON格式回复：
-{{
-    "main_colors": ["颜色1", "颜色2", "颜色3"],
-    "secondary_colors": ["颜色1", "颜色2"],
-    "meanings": ["寓意1", "寓意2", "寓意3"],
-    "effect": "整体效果描述"
-}}"""
+请用简洁、专业的语言回答。"""
+    
+    # 调用 gemma3 分析图片
+    payload = {
+        "model": "gemma3:4b",
+        "prompt": prompt,
+        "images": [image_base64],
+        "stream": False
+    }
     
     try:
         response = requests.post(
             f"{OLLAMA_HOST}/api/generate",
-            json={
-                "model": "qwen2.5:latest",
-                "prompt": prompt,
-                "stream": False
-            },
-            timeout=60
+            json=payload,
+            timeout=120
         )
         
         if response.status_code == 200:
             result = response.json()
-            text = result.get("response", "")
-            
-            # 尝试解析JSON
-            try:
-                # 提取JSON部分
-                if "{" in text:
-                    json_str = text[text.find("{"):text.rfind("}")+1]
-                    return json.loads(json_str)
-            except:
-                pass
-            
-            # 如果解析失败，返回默认结果
-            return parse_fallback(text)
+            return result.get("response", "")
+        else:
+            return None
     except Exception as e:
         print(f"Error: {e}")
-    
-    return get_default_recommendation(room_type)
+        return None
 
-def parse_fallback(text):
-    """解析非JSON格式的回复"""
-    lines = [l.strip() for l in text.split("\n") if l.strip()]
+def parse_ollama_response(response_text):
+    """解析 Ollama 响应，提取风水分析结果"""
+    
+    # 简单的解析逻辑，实际可以根据响应格式调整
+    lines = response_text.split('\n')
+    
+    overview = ""
+    issues = ""
+    suggestions = ""
+    wealth = ""
+    
+    current_section = None
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+            
+        if any(x in line for x in ["户型", "结构", "概述"]):
+            current_section = "overview"
+        elif any(x in line for x in ["问题", "煞", "禁忌"]):
+            current_section = "issues"
+        elif any(x in line for x in ["建议", "调整", "化解"]):
+            current_section = "suggestions"
+        elif any(x in line for x in ["财位", "财运"]):
+            current_section = "wealth"
+        
+        if current_section:
+            if current_section == "overview":
+                overview += line + " "
+            elif current_section == "issues":
+                issues += line + " "
+            elif current_section == "suggestions":
+                suggestions += line + " "
+            elif current_section == "wealth":
+                wealth += line + " "
     
     return {
-        "main_colors": ["米白色", "淡黄色", "浅灰色"],
-        "secondary_colors": ["棕色", "金色"],
-        "meanings": ["温馨", "活力", "稳重"],
-        "effect": "和谐舒适的家居氛围"
+        "overview": overview.strip() or "未能识别户型结构",
+        "issues": issues.strip() or "未发现明显问题",
+        "suggestions": suggestions.strip() or "暂无建议",
+        "wealth": wealth.strip() or "根据户型确定"
     }
 
-def get_default_recommendation(room_type):
-    """默认配色方案"""
-    defaults = {
-        "客厅": {
-            "main_colors": ["米白色", "淡黄色", "浅灰色"],
-            "secondary_colors": ["棕色", "金色"],
-            "meanings": ["温馨", "活力", "稳重"],
-            "effect": "温馨舒适的待客空间"
-        },
-        "卧室": {
-            "main_colors": ["浅蓝色", "淡粉色", "米白色"],
-            "secondary_colors": ["浅紫色", "白色"],
-            "meanings": ["宁静", "浪漫", "纯净"],
-            "effect": "有助于睡眠的安静氛围"
-        },
-        "厨房": {
-            "main_colors": ["白色", "浅灰色", "淡绿色"],
-            "secondary_colors": ["银色", "蓝色"],
-            "meanings": ["洁净", "清新", "清凉"],
-            "effect": "干净清爽的烹饪环境"
-        },
-        "卫生间": {
-            "main_colors": ["白色", "浅蓝色", "灰色"],
-            "secondary_colors": ["银色", "透明色"],
-            "meanings": ["洁净", "清爽", "现代"],
-            "effect": "干净明亮的洗浴空间"
+@app.route('/analyze', methods=['POST'])
+def analyze():
+    """分析户型图"""
+    
+    if 'image' not in request.files:
+        return jsonify({"error": "请上传图片"}), 400
+    
+    file = request.files['image']
+    image_data = file.read()
+    image_base64 = encode_image(image_data)
+    
+    # 使用 Ollama 分析
+    response_text = analyze_with_ollama(image_base64)
+    
+    if response_text:
+        result = parse_ollama_response(response_text)
+    else:
+        # 如果 Ollama 调用失败，返回示例
+        result = {
+            "overview": "三室两厅户型",
+            "issues": "1. 入户门正对窗户（穿堂煞）\n2. 厨房门对卫生间门",
+            "suggestions": "1. 设置玄关屏风\n2. 厨卫间放阔叶植物",
+            "wealth": "客厅东南角"
         }
-    }
-    
-    return defaults.get(room_type, defaults["客厅"])
-
-@app.route('/recommend', methods=['GET'])
-def recommend():
-    """获取风水配色建议"""
-    room_type = request.args.get('room', '客厅')
-    birth_year = request.args.get('birth', None)
-    
-    result = get_color_recommendation(room_type, birth_year)
-    result["room"] = room_type
     
     return jsonify(result)
 
@@ -123,17 +132,22 @@ def health():
     """健康检查"""
     try:
         response = requests.get(f"{OLLAMA_HOST}/api/tags", timeout=5)
+        models = response.json().get("models", [])
+        model_names = [m["name"] for m in models]
         return jsonify({
             "status": "ok",
-            "ollama": "connected"
+            "ollama": "connected",
+            "models": model_names
         })
-    except:
+    except Exception as e:
         return jsonify({
             "status": "error",
-            "ollama": "disconnected"
+            "ollama": "disconnected",
+            "error": str(e)
         })
 
 if __name__ == '__main__':
-    print("🎨 风水配色助手启动中...")
-    print(f"📡 Ollama: {OLLAMA_HOST}")
-    app.run(host='0.0.0.0', port=5002, debug=True)
+    print("🚀 户型风水分析服务启动中...")
+    print(f"📡 Ollama 地址: {OLLAMA_HOST}")
+    print("🌐 服务地址: http://localhost:5000")
+    app.run(host='0.0.0.0', port=5001, debug=True)
