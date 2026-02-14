@@ -1,0 +1,86 @@
+{
+  "agents": {
+    "localai-core": {
+      "name": "本地核心代理",
+      "description": "处理敏感任务和本地知识库查询",
+      "api_base": "http://localhost:8080/v1",
+      "api_key": "dummy-key",
+      "model": "phi-4",
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "timeout": 120,
+      "system_prompt": "你是localai-core，一个专注于本地隐私保护和知识库检索的AI助手。你的特点：\n1. 所有处理都在本地完成，保护用户隐私\n2. 擅长使用QMD检索本地文档\n3. 处理敏感信息时不上传云端\n4. 对于本地文档分析、模板填充等任务效率高",
+      "triggers": [
+        "本地",
+        "隐私",
+        "敏感",
+        "QMD",
+        "文档检索",
+        "离线"
+      ],
+      "capabilities": ["privacy", "local_knowledge", "offline"],
+      "priority": 1
+    },
+    "kimi-writer": {
+      "name": "内容创作代理",
+      "description": "撰写风水推文、长文创作、联网搜索",
+      "api_base": "http://localhost:8000/v1",
+      "api_key": "${KIMI_REFRESH_TOKEN}",
+      "model": "kimi",
+      "temperature": 0.8,
+      "max_tokens": 8192,
+      "timeout": 60,
+      "system_prompt": "你是kimi-writer，一宅一句的风水内容创作助手。\n\n你的核心职责：\n1. 撰写轻松幽默、故事性强的风水推文\n2. 创作真实民间风水故事\n3. 联网搜索验证风水说法\n4. 多轮对话完善内容\n\n风格指南：\n- 真实：基于真实案例，不编造\n- 不迷信：理性看待风水，不危言耸听\n- 故事性：用故事讲知识，引人入胜\n- 轻松幽默：语言活泼，不刻板\n\n常用标签：#风水 #玄学 #道长 #姜还是老的辣 #八方来财",
+      "triggers": [
+        "推文",
+        "推特",
+        "写文案",
+        "风水故事",
+        "创作",
+        "写文章",
+        "联网搜索",
+        "查证"
+      ],
+      "capabilities": ["writing", "web_search", "multi_turn", "chinese"],
+      "priority": 2
+    },
+    "qwen-analyst": {
+      "name": "分析绘图代理",
+      "description": "AI绘图、文档分析、多模态任务",
+      "api_base": "http://localhost:8001/v1",
+      "api_key": "${QWEN_REFRESH_TOKEN}",
+      "model": "qwen-max",
+      "temperature": 0.6,
+      "max_tokens": 8192,
+      "timeout": 90,
+      "system_prompt": "你是qwen-analyst，通义千问分析助手，擅长AI绘图、文档分析和多模态任务。\n\n你的核心职责：\n1. 为内容生成配图和示意图\n2. 分析长文档，提取关键信息\n3. 处理图文结合的多模态任务\n4. 综合数据分析，生成报告\n\n工作方式：\n- 绘图：根据内容描述生成无水印AI图片\n- 文档分析：分段阅读，总结要点\n- 多模态：结合文字和图像信息综合分析",
+      "triggers": [
+        "配图",
+        "画图",
+        "生成图片",
+        "AI绘图",
+        "分析文档",
+        "文档解读",
+        "长文档",
+        "多模态"
+      ],
+      "capabilities": ["image_generation", "document_analysis", "multi_modal"],
+      "priority": 3
+    }
+  },
+  "routing_rules": {
+    "privacy_keywords": ["私人", "敏感", "本地文件", "我的笔记", "保密"],
+    "image_keywords": ["配图", "画图", "生成图片", "示意图", "插图", "封面"],
+    "search_keywords": ["搜索", "查证", "联网", "最新", "查一下", "验证"],
+    "writing_keywords": ["推文", "推特", "写文案", "风水故事", "创作", "写文章"],
+    "analysis_keywords": ["分析文档", "解读", "长文档", "分析报告"]
+  },
+  "manual_prefixes": {
+    "@localai": "localai-core",
+    "@本地": "localai-core",
+    "@kimi": "kimi-writer",
+    "@写作": "kimi-writer",
+    "@qwen": "qwen-analyst",
+    "@分析": "qwen-analyst"
+  }
+}
