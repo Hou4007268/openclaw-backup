@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Compass" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#D4AF37</item>
+        <item name="colorPrimaryVariant">#B8960C</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">#FF6B6B</item>
+        <item name="android:statusBarColor">#1A1A2E</item>
+    </style>
+</resources>

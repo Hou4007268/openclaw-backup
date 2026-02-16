@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1A1A2E"
+    android:padding="24dp">
+
+    <!-- 标题 -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="🧭 随身罗盘"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <!-- 方向文字 -->
+    <TextView
+        android:id="@+id/tvDirection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="北"
+        android:textColor="#FF6B6B"
+        android:textSize="48sp"
+        android:textStyle="bold" />
+
+    <!-- 角度 -->
+    <TextView
+        android:id="@+id/tvDegree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvDirection"
+        android:layout_centerHorizontal="true"
+        android:text="0°"
+        android:textColor="#AAAAAA"
+        android:textSize="20sp" />
+
+    <!-- 罗盘图片 -->
+    <ImageView
+        android:id="@+id/imageCompass"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_centerInParent="true"
+        android:contentDescription="罗盘" />
+
+    <!-- 说明文字 -->
+    <TextView
+        android:id="@+id/tvTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:text="水平摇晃手机，使指针稳定"
+        android:textColor="#666666"
+        android:textSize="14sp" />
+
+</RelativeLayout>

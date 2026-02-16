@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="280dp"
+    android:height="280dp"
+    android:viewportWidth="280"
+    android:viewportHeight="280">
+
+    <!-- 外圈 -->
+    <path
+        android:fillColor="#D4AF37"
+        android:pathData="M140,10 A130,130 0 1,1 139.9,10 Z" />
+    
+    <!-- 内圈 -->
+    <path
+        android:fillColor="#1A1A2E"
+        android:pathData="M140,25 A115,115 0 1,1 139.9,25 Z" />
+    
+    <!-- 刻度线 -->
+    <path
+        android:strokeColor="#D4AF37"
+        android:strokeWidth="2"
+        android:pathData="M140,30 L140,45" />
+    <path
+        android:strokeColor="#D4AF37"
+        android:strokeWidth="2"
+        android:pathData="M140,250 L140,235" />
+    <path
+        android:strokeColor="#D4AF37"
+        android:strokeWidth="2"
+        android:pathData="M30,140 L45,140" />
+    <path
+        android:strokeColor="#D4AF37"
+        android:strokeWidth="2"
+        android:pathData="M250,140 L235,140" />
+    
+    <!-- 东南西北标记 -->
+    <path
+        android:fillColor="#FF6B6B"
+        android:pathData="M140,50 L135,70 L145,70 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M140,230 L135,210 L145,210 Z" />
+    
+    <!-- 指针中心 -->
+    <path
+        android:fillColor="#D4AF37"
+        android:pathData="M140,140 m-10,0 a10,10 0 1,1 20,0 a10,10 0 1,1 -20,0" />
+
+</vector>
