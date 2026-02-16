@@ -1,0 +1,12 @@
+{
+  "id": "hotspot-monitor",
+  "name": "实时热点监控 (MiniMax M2.5)",
+  "schedule": "cron 0 */2 * * * @ Asia/Shanghai",
+  "payload": {
+    "kind": "agentTurn",
+    "instruction": "执行实时热点监控任务。\n\n1. 使用 web_search 搜索以下任一关键词（随机选择）：\n   - 风水布局\n   - 家居风水\n   - 玄学运势\n   - 住宅布局\n   - 装修风水\n\n2. 分析搜索结果，提取：\n   - 热门话题/趋势\n   - 高互动内容\n   - 可作为风水故事素材的内容\n\n3. 将结果保存到 memory/hotspot-$(date +%Y-%m-%d).md\n\n4. 如果发现有价值的热点，生成一条推特内容创意草稿"
+  },
+  "sessionTarget": "isolated",
+  "agent": "main",
+  "enabled": true
+}

@@ -1,5 +1,26 @@
 {
   "agents": {
+    "minimax-core": {
+      "name": "MiniMax M2.5 主力",
+      "description": "主力AI助手，具备图像理解、联网搜索和文案创作能力",
+      "api_base": "https://api.minimaxi.com/anthropic",
+      "api_key": "${MINIMAX_API_KEY}",
+      "model": "minimax/MiniMax-M2.5",
+      "temperature": 0.7,
+      "max_tokens": 8192,
+      "timeout": 60,
+      "system_prompt": "你是MiniMax M2.5，一宅一句的主力AI助手。你具备：\n1. 图像理解能力 - 可分析户型图、风水布局照片\n2. 联网搜索能力 - 实时追踪热点，验证信息\n3. 文案创作能力 - 撰写风水故事和推文\n\n风格：轻松幽默，真实故事，不迷信只讲实证。常用标签：#风水 #玄学 #一宅一句",
+      "triggers": [
+        "主力",
+        "图像分析",
+        "户型图",
+        "风水照片",
+        "联网搜索",
+        "热点追踪"
+      ],
+      "capabilities": ["vision", "web_search", "writing", "chinese"],
+      "priority": 0
+    },
     "localai-core": {
       "name": "本地核心代理",
       "description": "处理敏感任务和本地知识库查询",
@@ -76,6 +97,10 @@
     "analysis_keywords": ["分析文档", "解读", "长文档", "分析报告"]
   },
   "manual_prefixes": {
+    "@minimax": "minimax-core",
+    "@主力": "minimax-core",
+    "@图像": "minimax-core",
+    "@搜索": "minimax-core",
     "@localai": "localai-core",
     "@本地": "localai-core",
     "@kimi": "kimi-writer",

@@ -1,0 +1,12 @@
+{
+  "name": "fengshui-website",
+  "version": "1.0.0",
+  "files": [
+    "index.html",
+    "admin.html",
+    "login.html",
+    "api",
+    "images",
+    "videos"
+  ]
+}
