@@ -1,0 +1,8 @@
+{
+  "name": "screenshot-ocr",
+  "version": "1.0.0",
+  "description": "截图OCR文字识别技能",
+  "activation": "用户提到OCR、识别文字、截图识别、图片转文字",
+  "author": "一宅一句团队",
+  "homepage": "https://github.com/Hou4007268/openclaw-backup"
+}

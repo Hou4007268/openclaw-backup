@@ -1,0 +1,12 @@
+{
+  "name": "bilibili-danmaku",
+  "version": "1.0.0",
+  "description": "B站直播弹幕监控技能",
+  "main": "bin/danmaku.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["bilibili", "danmaku", "live", "monitor"],
+  "author": "一宅一句团队",
+  "license": "MIT"
+}

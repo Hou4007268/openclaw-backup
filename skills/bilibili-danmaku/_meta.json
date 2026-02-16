@@ -1,0 +1,8 @@
+{
+  "name": "bilibili-danmaku",
+  "version": "1.0.0",
+  "description": "B站直播弹幕监控技能",
+  "activation": "用户提到B站直播弹幕、bilibili danmaku、直播监控",
+  "author": "一宅一句团队",
+  "homepage": "https://github.com/Hou4007268/openclaw-backup"
+}
