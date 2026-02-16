@@ -196,6 +196,33 @@ Don't wait for permission to improve. If you learned something, write it down no
 
 ---
 
+## Claude Code 使用规范（2026-02-17）
+
+### 1. 先思考再动手
+- 不要一上来就开干，先用 Plan Mode (Shift+Tab两次) 规划
+- 思考=输入质量→输出质量
+
+### 2. CLAUDE.md 使用原则
+- 简短：150-200条指令最佳（系统占50条）
+- 具体：告诉它项目特有的东西，别解释常识
+- 讲原因：给理由让Claude更好判断
+- 常更新：每次纠正同样问题两次就写入文件
+
+### 3. Context管理
+- 质量在 30% context 开始下降，不是100%
+- 单会话单任务，用外部记忆、定期/copy-paste reset
+
+### 4. Prompt技巧
+- 越具体越好
+- 告诉它"不要做什么"
+- 给例子比描述更有效
+
+### 5. 核心观点
+- 好模型+好输入=好输出
+- 模型不是瓶颈，prompt能力才是
+
+---
+
 ## Learned Lessons
 
 > Add your lessons here as you learn them
