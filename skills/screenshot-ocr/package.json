@@ -1,0 +1,13 @@
+{
+  "name": "screenshot-ocr",
+  "version": "1.0.0",
+  "description": "截图OCR文字识别技能",
+  "main": "bin/ocr.js",
+  "scripts": {
+    "test": "node bin/ocr.js"
+  },
+  "keywords": ["ocr", "screenshot", "文字识别"],
+  "author": "一宅一句团队",
+  "license": "MIT",
+  "dependencies": {}
+}
