@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今日运势 - Daily Fortune</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #fff;
+        }
+        .container {
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            color: #888;
+            margin-bottom: 40px;
+        }
+        .fortune-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            display: none;
+        }
+        .fortune-box.show { display: block; }
+        .zodiac {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        .luck-score {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .luck-score.high { color: #52c41a; }
+        .luck-score.medium { color: #faad14; }
+        .luck-score.low { color: #ff4d4f; }
+        .fortune-text {
+            color: #ccc;
+            line-height: 1.8;
+            margin: 20px 0;
+        }
+        .btn {
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: scale(1.05); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .tips {
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏮 今日运势</h1>
+        <p class="subtitle">Daily Fortune Reading</p>
+        
+        <button class="btn" onclick="getFortune()" id="fortuneBtn">开始抽签</button>
+        
+        <div class="fortune-box" id="fortuneBox">
+            <div class="zodiac" id="zodiac">🐉</div>
+            <div class="luck-score" id="luckScore">85</div>
+            <div class="fortune-text" id="fortuneText">
+                今日运势极佳！适合开展新项目。<br>
+                幸运数字：6, 8, 9<br>
+                幸运颜色：金色、红色
+            </div>
+        </div>
+        
+        <p class="tips">每天限抽一次 · 仅供娱乐</p>
+    </div>
+
+    <script>
+        const fortunes = [
+            { emoji: '🐉', score: 95, text: '今日大吉！万事皆宜，适合做重大决定。幸运数字：2, 8。幸运颜色：金色。' },
+            { emoji: '🐯', score: 88, text: '运势不错！有意外惊喜。幸运数字：3, 7。幸运颜色：红色。' },
+            { emoji: '🐴', score: 85, text: '今日运势极佳！适合开展新项目。幸运数字：6, 8, 9。幸运颜色：金色、红色。' },
+            { emoji: '🐍', score: 82, text: '运势平稳。注意细节可成功。幸运数字：1, 5。幸运颜色：绿色。' },
+            { emoji: '🐐', score: 78, text: '运势一般，保持平常心。幸运数字：4, 9。幸运颜色：白色。' },
+            { emoji: '🐒', score: 75, text: '运势小低，注意口舌。幸运数字：2, 7。幸运颜色：蓝色。' },
+            { emoji: '🐕', score: 72, text: '运势下滑，需谨慎行事。幸运数字：3, 6。幸运颜色：灰色。' },
+            { emoji: '🐷', score: 68, text: '今日需低调，避免冲突。幸运数字：1, 8。幸运颜色：黑色。' },
+        ];
+        
+        const colors = ['high', 'medium', 'low'];
+        
+        function getFortune() {
+            const btn = document.getElementById('fortuneBtn');
+            btn.disabled = true;
+            btn.textContent = '抽签中...';
+            
+            // 模拟抽签动画
+            let count = 0;
+            const interval = setInterval(() => {
+                const random = fortunes[Math.floor(Math.random() * fortunes.length)];
+                document.getElementById('zodiac').textContent = random.emoji;
+                count++;
+                if (count > 10) {
+                    clearInterval(interval);
+                    showResult();
+                }
+            }, 100);
+        }
+        
+        function showResult() {
+            const fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+            
+            document.getElementById('zodiac').textContent = fortune.emoji;
+            document.getElementById('luckScore').textContent = fortune.score;
+            document.getElementById('luckScore').className = 'luck-score ' + 
+                (fortune.score >= 80 ? 'high' : fortune.score >= 70 ? 'medium' : 'low');
+            document.getElementById('fortuneText').innerHTML = fortune.text;
+            
+            document.getElementById('fortuneBox').classList.add('show');
+            document.getElementById('fortuneBtn').textContent = '明日再来';
+            
+            // 保存抽签记录到 localStorage
+            const today = new Date().toDateString();
+            localStorage.setItem('fortune_date', today);
+        }
+        
+        // 检查今天是否已经抽过
+        window.onload = function() {
+            const today = new Date().toDateString();
+            const lastDate = localStorage.getItem('fortune_date');
+            if (lastDate === today) {
+                document.getElementById('fortuneBtn').textContent = '明日再来';
+                document.getElementById('fortuneBtn').disabled = true;
+            }
+        }
+    </script>
+</body>
+</html>
