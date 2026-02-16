@@ -60,6 +60,25 @@ You wake up fresh each session. These files are your continuity:
 - **Long-term:** `MEMORY.md` — curated memories
 - **Topic notes:** `notes/*.md` — specific areas (PARA structure)
 
+### Memory Retrieval (MANDATORY)
+
+**Never read MEMORY.md or memory/*.md in full for lookups. Use qmd:**
+
+1. **Search first:** `qmd query "<question>"` — combined search with reranking
+2. **Get snippet:** `qmd get <file>:<line> -l 20` — pull only what you need
+3. **Fallback only:** If qmd returns nothing, then read files
+
+**Why:** It's like looking up a word in a dictionary — you use the index, not read cover to cover.
+
+### After Memory Writes
+
+**Every time you write to memory files, run:**
+```bash
+qmd update && qmd embed
+```
+
+This keeps the vector search index fresh.
+
 ### Write It Down
 
 - Memory is limited — if you want to remember something, WRITE IT
