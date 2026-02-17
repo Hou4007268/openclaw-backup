@@ -1,0 +1,8 @@
+{
+  "name": "fengshui-xiaohongshu",
+  "version": "1.0.0",
+  "description": "风水小红书笔记创作技能 - 为一宅一句定制",
+  "activation": "用户提到小红书、笔记、发帖、发笔记",
+  "author": "一宅一句团队",
+  "homepage": "https://github.com/Hou4007268/openclaw-backup"
+}
