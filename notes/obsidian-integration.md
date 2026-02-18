@@ -35,5 +35,33 @@ Obsidian 作为知识库，OpenClaw 作为 AI 引擎：
 ## 当前状态
 
 - ✅ Obsidian 已安装
-- ⏳ MCP 服务器需要额外配置
-- ✅ 可用快捷方式：Obsidian写 → Discord发 → AI处理
+- ✅ Smithery CLI 已登录
+- ⚠️ MCP 连接需要进一步配置
+
+### 已添加的 MCP 服务器
+
+| 服务器 | 状态 | 说明 |
+|--------|------|------|
+| Obsidian Manager | ✅ 已连接 | 可用3个工具 |
+| Obsidian Vault | ❌ 错误 | 404 |
+
+### 可用工具
+
+- `read_note` - 读取笔记
+- `create_note_from_template` - 从模板创建笔记
+- `list_templates` - 列出模板
+
+### 问题
+
+MCP 服务器需要配置 Obsidian vault 路径，但远程服务器可能不支持此配置。
+
+---
+
+## 替代方案：直接接入 OpenClaw
+
+由于 MCP 配置复杂，建议使用快捷方式：
+
+1. Obsidian 写笔记
+2. 复制内容
+3. 粘贴到 Discord 发给我
+4. 我处理后返回
