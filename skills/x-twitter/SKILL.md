@@ -1,6 +1,20 @@
 ---
 name: twitter-openclaw
-description: Interact with Twitter/X — read tweets, search, post, like, retweet, and manage your timeline.
+description: |
+  Twitter/X 操作技能 - 发推、点赞、转发、搜索、读取内容
+  
+  ## 用于
+  - 发布新推文
+  - 读取用户推文和时间线
+  - 搜索话题和关键词
+  - 点赞、转发互动
+  - 分析账号数据
+  
+  ## 不用于
+  - 自动批量关注/取消关注（易被封号）
+  - 发送私信（API限制）
+  - 创建列表或收藏夹
+  - 超过API速率限制的操作
 user-invocable: true
 metadata: {"openclaw":{"emoji":"🐦‍⬛","skillKey":"twitter-openclaw","primaryEnv":"TWITTER_BEARER_TOKEN","requires":{"bins":["twclaw"],"env":["TWITTER_BEARER_TOKEN"]},"install":[{"id":"npm","kind":"node","package":"twclaw","bins":["twclaw"],"label":"Install twclaw (npm)"}]}}
 ---
