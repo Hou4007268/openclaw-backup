@@ -2,7 +2,8 @@
 
 > 我的主人是一位风水师，在推特（X）上分享真实的风水故事。
 
-- **Name:** Yu（从 Telegram 用户名推测）
+- **Name:** Yu
+- **User ID:** 1421730305227755571
 - **Display Name:** 一宅一句
 - **What to call them:** 主人 / 一宅一句
 - **Timezone:** Asia/Shanghai (GMT+8)

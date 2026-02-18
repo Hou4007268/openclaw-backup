@@ -1,0 +1,40 @@
+{
+  "lastUpdated": "2026-02-17T16:25:00+08:00",
+  "columns": {
+    "open": {
+      "name": "待处理",
+      "items": [
+        {
+          "id": "wang-zhan-nei-rong",
+          "title": "网站内容扩充",
+          "priority": "P2",
+          "source": "手动",
+          "created": "2026-02-17"
+        }
+      ]
+    },
+    "in-progress": {
+      "name": "进行中",
+      "items": []
+    },
+    "closed": {
+      "name": "已完成",
+      "items": [
+        {
+          "id": "zhang-fen-man",
+          "title": "涨粉速度慢",
+          "priority": "P1",
+          "source": "数据分析",
+          "created": "2026-02-17",
+          "completed": "2026-02-17"
+        }
+      ]
+    }
+  },
+  "stats": {
+    "total": 2,
+    "open": 1,
+    "inProgress": 0,
+    "closed": 1
+  }
+}
