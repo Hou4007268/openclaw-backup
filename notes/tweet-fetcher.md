@@ -30,3 +30,19 @@ python3 ~/projects/openclaw-backup/x-tweet-fetcher/scripts/fetch_tweet.py --user
 ```bash
 cd ~/projects/openclaw-backup/camofox-browser && npm start &
 ```
+
+---
+
+## PII 脱敏工具
+
+### 本地脚本（已部署）
+```bash
+# 脱敏处理
+python3 ~/projects/openclaw-backup/scripts/pii-redact.py "内容"
+```
+
+### 支持的脱敏类型
+- 邮箱 → `<EMAIL>`
+- 电话 → `<PHONE>`
+- 身份证 → `<ID_CARD>`
+- 银行卡 → `<BANK_CARD>`
