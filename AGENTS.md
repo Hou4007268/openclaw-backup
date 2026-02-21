@@ -273,6 +273,25 @@ Don't wait for permission to improve. If you learned something, write it down no
 
 ---
 
+## Task Checklist（任务路由表）
+
+> 来源：Jason Zuo的Workspace结构实践
+
+收到任务先查表，不靠脑子记：
+
+| 任务类型 | Skill/工具 |
+|----------|------------|
+| 写推文配图 | fengshui-illustrator |
+| 发推特 | twitter-publish |
+| 扒推文/查X数据 | Camofox browser |
+| 写代码 | @小码 |
+| 发小红书笔记 | xiaohongshu-visual + xiaohongshu-writer |
+| 查天气 | weather skill |
+| 查资料 | web_search / browser |
+| 发邮件 | 需人工确认 |
+
+---
+
 ## Team Collaboration (实时群聊与协作)
 
 ### 1. 协作模式
