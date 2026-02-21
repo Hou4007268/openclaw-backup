@@ -171,6 +171,18 @@ CLI → Gateway → Channel → Routing → Auto-Reply → Outbound
 | @雷达 | 监控 | 热点监控 |
 | @数据帝 | 分析师 | 数据分析 |
 
+### 竞品账号库（2026-02-21更新）
+
+| 账号 | 定位 | 简介 |
+|------|------|------|
+| @daofadaoshu | 传统风水 | 风水玄学 符咒 道法道术 |
+| @Mountain_Lord33 | 玄学博主 | 觀星斷運，以術知天 |
+| @snakeNHX | 命理师 | 紫斗天禄Web3/命理师 |
+| @grgerwcwetwet | 资源号 | 周览资源（风水玄学专题） |
+| @fhwofjow51260 | 资源号 | 娜美知识库（35.7GB风水资源） |
+
+**抓取方式**：使用 `browser` 工具，profile="openclaw"
+
 ### 网站SEO优化记录
 
 | 日期 | 优化项 |
@@ -230,6 +242,7 @@ CLI → Gateway → Channel → Routing → Auto-Reply → Outbound
 |------|------|------|
 | #推特运营 | fengshui-illustrator | 风水内容配图 |
 | #📕-小红书 | xiaohongshu-visual | 非风水内容配图 |
+| #📝-公众号 | wechat-visual | 公众号封面图/正文插图 |
 
 ### 激活条件
 
@@ -1021,3 +1034,23 @@ qmd很强，但先要有好的记忆结构。正确顺序：
 - 日常对话token：通常降5~10x
 - 回忆相关性：明显提升
 - 长期稳定性：不再越跑越胖
+
+
+---
+
+## 今日排查 (2026-02-21)
+
+### Cron 任务失败原因
+- Discord WebSocket 断连 (code 1005) 导致 announce 失败
+- 竞品深度分析 agentId=None
+- 素材收集 timeout 300s 不够
+
+### 修复操作
+- 竞品深度分析: agentId=None → main
+- 素材收集: timeout 300s → 600s, delivery=none
+- 爆款复盘: delivery=none
+
+### Browser 工具问题
+- Chrome extension relay 需要 attached tab
+- profile=chrome 需要先点击工具栏图标
+- profile=openclaw 独立浏览器可用但 CDP 有时不通
