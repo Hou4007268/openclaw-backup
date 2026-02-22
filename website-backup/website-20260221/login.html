@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 一宅一句</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #fff;
+        }
+        .login-container {
+            background: rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle { text-align: center; color: #999; margin-bottom: 25px; font-size: 0.9rem; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #ccc; font-size: 0.9rem; }
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            font-size: 1rem;
+        }
+        .form-group input:focus { outline: none; border-color: #f5576c; }
+        .btn {
+            width: 100%;
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .btn:hover { opacity: 0.9; }
+        .tips { text-align: center; margin-top: 20px; color: #666; font-size: 0.8rem; }
+        .hidden { display: none; }
+        .welcome { text-align: center; padding: 20px; }
+        .welcome-icon { font-size: 4rem; }
+        .welcome h2 { margin: 15px 0; }
+        .welcome p { color: #ccc; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>🏮 一宅一句</h1>
+        <p class="subtitle">AI风水助手</p>
+        
+        <!-- 用户登录/注册 -->
+        <div id="userPanel">
+            <div id="userLogin">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" id="loginUsername" placeholder="请输入用户名">
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="loginPassword" placeholder="请输入密码">
+                </div>
+                <button class="btn" onclick="doLogin()">登录</button>
+                <p style="text-align:center;margin-top:15px;color:#999;font-size:0.85rem;">
+                    还没有账号？<a href="#" onclick="showUserRegister()" style="color:#f5576c;">立即注册</a>
+                </p>
+            </div>
+            
+            <div id="userRegister" class="hidden">
+                <div class="form-group">
+                    <label>设置用户名</label>
+                    <input type="text" id="regUsername" placeholder="请输入用户名">
+                </div>
+                <div class="form-group">
+                    <label>设置密码</label>
+                    <input type="password" id="regPassword" placeholder="请设置密码（至少4位）">
+                </div>
+                <button class="btn" onclick="doRegister()">注册</button>
+                <p style="text-align:center;margin-top:15px;color:#999;font-size:0.85rem;">
+                    已有账号？<a href="#" onclick="showUserLogin()" style="color:#f5576c;">立即登录</a>
+                </p>
+            </div>
+            
+            <div id="userWelcome" class="hidden">
+                <div class="welcome">
+                    <div class="welcome-icon">👤</div>
+                    <h2>欢迎回来！</h2>
+                    <p id="userWelcomeText"></p>
+                    <button class="btn" onclick="goToHome()">进入首页</button>
+                    <button class="btn" onclick="logout()" style="background:rgba(255,255,255,0.2);margin-top:10px;">退出登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var users = JSON.parse(localStorage.getItem('fengshui_users') || '{}');
+        var currentUser = localStorage.getItem('fengshui_current');
+        
+        // 用户登录
+        function showUserLogin() {
+            document.getElementById('userLogin').classList.remove('hidden');
+            document.getElementById('userRegister').classList.add('hidden');
+            document.getElementById('userWelcome').classList.add('hidden');
+        }
+        
+        function showUserRegister() {
+            document.getElementById('userLogin').classList.add('hidden');
+            document.getElementById('userRegister').classList.remove('hidden');
+            document.getElementById('userWelcome').classList.add('hidden');
+        }
+        
+        function doLogin() {
+            var username = document.getElementById('loginUsername').value.trim();
+            var password = document.getElementById('loginPassword').value;
+            
+            if (!username || !password) { alert('请填写用户名和密码'); return; }
+            
+            if (users[username] && users[username].password === password) {
+                localStorage.setItem('fengshui_current', username);
+                document.getElementById('userLogin').classList.add('hidden');
+                document.getElementById('userWelcome').classList.remove('hidden');
+                document.getElementById('userWelcomeText').textContent = '登录时间：' + new Date().toLocaleString('zh-CN');
+            } else {
+                alert('用户名或密码错误');
+            }
+        }
+        
+        function doRegister() {
+            var username = document.getElementById('regUsername').value.trim();
+            var password = document.getElementById('regPassword').value;
+            
+            if (!username || !password) { alert('请填写用户名和密码'); return; }
+            if (password.length < 4) { alert('密码至少4位'); return; }
+            if (users[username]) { alert('用户名已存在'); return; }
+            
+            users[username] = { password: password, created: new Date().toLocaleString() };
+            localStorage.setItem('fengshui_users', JSON.stringify(users));
+            alert('注册成功！请登录');
+            showUserLogin();
+        }
+        
+        function goToHome() {
+            window.location.href = '/';
+        }
+        
+        function logout() {
+            localStorage.removeItem('fengshui_current');
+            location.reload();
+        }
+        
+        // 检查登录状态
+        if (currentUser && users[currentUser]) {
+            document.getElementById('userLogin').classList.add('hidden');
+            document.getElementById('userWelcome').classList.remove('hidden');
+            document.getElementById('userWelcomeText').textContent = '登录时间：' + (users[currentUser].lastLogin || new Date().toLocaleString());
+            users[currentUser].lastLogin = new Date().toLocaleString();
+            localStorage.setItem('fengshui_users', JSON.stringify(users));
+        }
+    </script>
+</body>
+</html>

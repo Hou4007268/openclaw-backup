@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线咨询 - 一宅一句</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Noto Sans SC', sans-serif; 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #b8964c;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #b8964c;
+        }
+        textarea { height: 120px; resize: vertical; }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #b8964c 0%, #d4af37 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        .success {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        .success h2 { color: #4CAF50; margin-bottom: 10px; }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #b8964c;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="formContainer">
+        <h1>🏮 在线咨询</h1>
+        <p class="subtitle">一宅一句 · 专业风水咨询</p>
+        
+        <form id="consultForm">
+            <div class="form-group">
+                <label for="name">您的姓名 *</label>
+                <input type="text" id="name" name="name" required placeholder="请输入您的姓名">
+            </div>
+            
+            <div class="form-group">
+                <label for="contact">联系方式 *</label>
+                <input type="text" id="contact" name="contact" required placeholder="微信号或手机号">
+            </div>
+            
+            <div class="form-group">
+                <label for="type">咨询类型 *</label>
+                <select id="type" name="type" required>
+                    <option value="">请选择咨询类型</option>
+                    <option value="装修风水">装修风水</option>
+                    <option value="财运提升">财运提升</option>
+                    <option value="起名改名">起名改名</option>
+                    <option value="姻缘测算">姻缘测算</option>
+                    <option value="阴宅祖坟">阴宅祖坟</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">问题描述 *</label>
+                <textarea id="message" name="message" required placeholder="请简要描述您的风水问题或需求..."></textarea>
+            </div>
+            
+            <button type="submit">提交咨询</button>
+        </form>
+        
+        <a href="/" class="back-link">返回首页</a>
+    </div>
+    
+    <div class="container success" id="successMessage">
+        <h2>✅ 提交成功！</h2>
+        <p>感谢您的咨询，我们会尽快与您联系。</p>
+        <p style="margin-top: 20px; color: #666;">工作时间：周一至周日 9:00-21:00</p>
+        <a href="/consult.html" class="back-link">再提一个咨询</a>
+    </div>
+
+    <script>
+        document.getElementById('consultForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Hide form, show success
+            document.getElementById('formContainer').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Here you can add API call to submit to Feishu
+            // Example:
+            // fetch('/api/consult', {
+            //     method: 'POST',
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify({
+            //         name: document.getElementById('name').value,
+            //         contact: document.getElementById('contact').value,
+            //         type: document.getElementById('type').value,
+            //         message: document.getElementById('message').value
+            //     })
+            // });
+        });
+    </script>
+</body>
+</html>

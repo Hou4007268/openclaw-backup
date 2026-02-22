@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>问卷测试 - 一宅一句</title>
+    <meta name="description" content="趣味问卷测试">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        header {
+            padding: 20px;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header h1 {
+            font-size: 1.4rem;
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .back-link {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #f5576c;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px 20px 100px;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+            transition: width 0.3s;
+        }
+        
+        .question-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 30px 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .question-number {
+            color: #f5576c;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .option:hover {
+            border-color: #f5576c;
+            background: rgba(255,255,255,0.1);
+        }
+        .option.selected {
+            border-color: #f5576c;
+            background: rgba(245,87,108,0.15);
+        }
+        .option-radio {
+            width: 22px;
+            height: 22px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .option.selected .option-radio {
+            border-color: #f5576c;
+        }
+        .option.selected .option-radio::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: #f5576c;
+            border-radius: 50%;
+        }
+        .option-text { font-size: 1rem; }
+        
+        .input-field {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 15px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #f5576c;
+        }
+        .input-field::placeholder { color: #666; }
+        
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(245,87,108,0.3);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(245,87,108,0.3);
+        }
+        .result-icon { font-size: 4rem; margin-bottom: 20px; }
+        .result-title {
+            font-size: 1.5rem;
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+        .result-desc {
+            color: #aaa;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+        .result-score {
+            font-size: 2.5rem;
+            color: #f5576c;
+            margin-bottom: 10px;
+        }
+        
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px;
+            backdrop-filter: blur(10px);
+        }
+        nav a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+        nav a.active, nav a:hover { color: #f5576c; }
+        nav .nav-icon { font-size: 1.5rem; display: block; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/tools.html" class="back-link">← 返回</a>
+        <h1 id="test-title">问卷测试</h1>
+    </header>
+    
+    <div class="container" id="app">
+        <!-- 问卷内容 -->
+    </div>
+    
+    <nav>
+        <a href="/">
+            <span class="nav-icon">🏠</span>
+            首页
+        </a>
+        <a href="/tools.html" class="active">
+            <span class="nav-icon">🔧</span>
+            工具
+        </a>
+        <a href="/messages/">
+            <span class="nav-icon">💬</span>
+            留言
+        </a>
+        <a href="/login.html">
+            <span class="nav-icon">👤</span>
+            我的
+        </a>
+    </nav>
+
+    <script>
+    // 问卷配置 - 可扩展
+    const quizConfig = {
+        // 缘分测试
+        'yuanfen': {
+            title: '💕 缘分测试',
+            questions: [
+                {
+                    type: 'choice',
+                    text: '你们是在哪里认识的？',
+                    options: ['同事/同学', '社交软件', '朋友介绍', '偶然相遇', '其他']
+                },
+                {
+                    type: 'choice',
+                    text: 'TA最吸引你的地方是？',
+                    options: ['外表气质', '性格脾气', '才华能力', '金钱财富', '对我好']
+                },
+                {
+                    type: 'choice',
+                    text: '你们吵架时通常谁先道歉？',
+                    options: ['我先道歉', 'TA先道歉', '看情况', '几乎不吵架', '冷战中']
+                },
+                {
+                    type: 'choice',
+                    text: 'TA会记得你们的纪念日吗？',
+                    options: ['记得很清楚', '大概记得', '偶尔忘记', '完全忘记', '不清楚']
+                },
+                {
+                    type: 'choice',
+                    text: '如果结婚，TA愿意为你花钱吗？',
+                    options: ['非常愿意', '比较愿意', '要看情况', '不太愿意', '不愿意']
+                }
+            ],
+            calculate: (answers) => {
+                const scores = [3, 4, 2, 4, 5];
+                let total = 0;
+                answers.forEach((ans, i) => {
+                    total += scores[i] * (ans + 1) / 5;
+                });
+                return Math.round(total * 20);
+            },
+            getResult: (score) => {
+                if (score >= 80) return { title: '天作之合', icon: '💘', desc: '你们是天造地设的一对！磁场非常契合，遇到矛盾也能很好地沟通解决。祝你们幸福长久！' };
+                if (score >= 60) return { title: '潜力股', icon: '🌟', desc: '你们的关系很有发展潜力。虽然还有一些需要磨合的地方，但只要双方用心经营，未来可期！' };
+                if (score >= 40) return { title: '需要努力', icon: '💪', desc: '你们的缘分需要更多努力。试着多沟通、多理解对方，相信感情会慢慢变好的。' };
+                return { title: '及时止损', icon: '💔', desc: '或许你们真的不太合适。考虑清楚自己想要什么，不要在一段关系中委曲求全。' };
+            }
+        },
+        
+        // 性格测试
+        'xingge': {
+            title: '🎭 性格测试',
+            questions: [
+                {
+                    type: 'choice',
+                    text: '周末你喜欢怎么度过？',
+                    options: ['宅在家里', '和朋友聚会', '外出旅行', '学习/工作', '运动健身']
+                },
+                {
+                    type: 'choice',
+                    text: '和朋友发生矛盾，你会？',
+                    options: ['直接沟通', '生闷气等对方来哄', '冷战', '找朋友倾诉', '先冷静再谈']
+                },
+                {
+                    type: 'choice',
+                    text: '做决定时你通常？',
+                    options: ['果断快速', '犹豫不决', '听别人的', '分析利弊再定', '看心情']
+                },
+                {
+                    type: 'choice',
+                    text: '你更看重什么？',
+                    options: ['事业成功', '感情生活', '家庭和睦', '身心健康', '个人成长']
+                },
+                {
+                    type: 'choice',
+                    text: '面对压力你会？',
+                    options: ['想办法解决', '逃避拖延', '找人倾诉', '运动/旅行放松', '自己消化']
+                }
+            ],
+            calculate: (answers) => {
+                const scores = [2, 3, 3, 4, 3];
+                let total = 0;
+                answers.forEach((ans, i) => {
+                    total += scores[i] * (ans + 1) / 5;
+                });
+                return Math.round(total * 20);
+            },
+            getResult: (score) => {
+                if (score >= 80) return { title: '外向行动派', icon: '🔥', desc: '你是一个充满活力的人！喜欢行动，不喜欢等待。勇于追求自己想要的东西，但有时候可能太冲动了。' };
+                if (score >= 60) return { title: '稳健思考者', icon: '🧠', desc: '你善于思考，做事有分寸。不会冲动决定，但有时想太多会错过机会。平衡一下会更好！' };
+                if (score >= 40) return { title: '内敛敏感型', icon: '🌙', desc: '你感情丰富，内心细腻。善于感知他人的情绪，但有时会想太多，让自己陷入纠结。' };
+                return { title: '佛系随性派', icon: '☀️', desc: '你性格温和，不争不抢。喜欢简单的生活，但有时候可能显得太随意了。适当有些追求会更好！' };
+            }
+        },
+        
+        // 心理年龄
+        'xinlinianling': {
+            title: '😐 心理年龄测试',
+            questions: [
+                {
+                    type: 'choice',
+                    text: '你更喜欢和什么人在一起？',
+                    options: ['年轻人', '同龄人', '年长者', '都可以']
+                },
+                {
+                    type: 'choice',
+                    text: '面对新事物，你的态度是？',
+                    options: ['充满好奇', '观望一下', '不太感兴趣', '拒绝改变']
+                },
+                {
+                    type: 'choice',
+                    text: '你还会看动画片吗？',
+                    options: ['经常看', '偶尔看', '不看', '只陪孩子看']
+                },
+                {
+                    type: 'choice',
+                    text: '你的穿衣风格是？',
+                    options: ['时尚潮流', '舒适为主', '稳重成熟', '经典简约']
+                },
+                {
+                    type: 'choice',
+                    text: '你对未来的态度是？',
+                    options: ['充满期待', '顺其自然', '有些焦虑', '过一天是一天']
+                }
+            ],
+            calculate: (answers) => {
+                return Math.round(18 + answers.reduce((a, b) => a + b, 0) * 4);
+            },
+            getResult: (score) => {
+                if (score <= 22) return { title: '心理年龄18岁', icon: '🌸', desc: '你拥有一颗年轻的心！充满活力和好奇心，对生活充满热情。保持这种心态，你永远年轻！' };
+                if (score <= 28) return { title: '心理年龄25岁', icon: '🌻', desc: '你的心态很年轻！有自己的想法，但也保持着对世界的好奇。继续拥抱生活吧！' };
+                if (score <= 35) return { title: '心理年龄32岁', icon: '🌳', desc: '你有着成熟的内心，但不失年轻的心态。稳重又不失活力，这是一个很好的状态！' };
+                return { title: '心理年龄40岁+', icon: '🏛️', desc: '你有着超越年龄的成熟和智慧。看透了很多事情，心态平和。这是岁月的馈赠！' };
+            }
+        }
+    };
+
+    // 从URL获取测试类型
+    const params = new URLSearchParams(window.location.search);
+    const testType = params.get('type') || 'yuanfen';
+    const config = quizConfig[testType] || quizConfig['yuanfen'];
+    
+    let currentQuestion = 0;
+    let answers = [];
+    
+    // 初始化
+    document.getElementById('test-title').textContent = config.title;
+    
+    function renderQuestion() {
+        const q = config.questions[currentQuestion];
+        const progress = ((currentQuestion + 1) / config.questions.length) * 100;
+        
+        let html = `
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: ${progress}%"></div>
+            </div>
+            <div class="question-card">
+                <div class="question-number">问题 ${currentQuestion + 1} / ${config.questions.length}</div>
+                <div class="question-text">${q.text}</div>
+                <div class="options">
+        `;
+        
+        if (q.type === 'choice') {
+            q.options.forEach((opt, i) => {
+                html += `
+                    <div class="option" onclick="selectOption(${i})">
+                        <div class="option-radio"></div>
+                        <div class="option-text">${opt}</div>
+                    </div>
+                `;
+            });
+        }
+        
+        html += `
+                </div>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>下一题</button>
+            </div>
+        `;
+        
+        document.getElementById('app').innerHTML = html;
+    }
+    
+    function selectOption(index) {
+        answers[currentQuestion] = index;
+        document.querySelectorAll('.option').forEach((el, i) => {
+            el.classList.toggle('selected', i === index);
+        });
+        document.getElementById('nextBtn').disabled = false;
+    }
+    
+    function nextQuestion() {
+        if (currentQuestion < config.questions.length - 1) {
+            currentQuestion++;
+            renderQuestion();
+        } else {
+            showResult();
+        }
+    }
+    
+    function showResult() {
+        const score = config.calculate(answers);
+        const result = config.getResult(score);
+        
+        const html = `
+            <div class="result-card">
+                <div class="result-icon">${result.icon}</div>
+                <div class="result-title">${result.title}</div>
+                <div class="result-score">${score}分</div>
+                <div class="result-desc">${result.desc}</div>
+                <button class="btn btn-primary" onclick="window.location.href='/tools.html'">返回测试中心</button>
+                <button class="btn btn-primary" onclick="location.reload()" style="background: rgba(255,255,255,0.1); margin-top: 10px;">再测一次</button>
+            </div>
+        `;
+        
+        document.getElementById('app').innerHTML = html;
+    }
+    
+    // 启动
+    renderQuestion();
+    </script>
+</body>
+</html>

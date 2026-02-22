@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>风水工具 - 一宅一句</title>
+    <meta name="description" content="风水工具合集">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        header {
+            padding: 25px 20px;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+        }
+        header h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        header p { color: #888; margin-top: 8px; font-size: 0.9rem; }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 20px 100px;
+        }
+        
+        .section { margin-bottom: 40px; }
+        .section-title {
+            font-size: 1.1rem;
+            color: #f5576c;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .tool-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 25px 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #fff;
+            display: block;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: #f5576c;
+            background: rgba(255,255,255,0.12);
+        }
+        .tool-icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .tool-name { font-size: 1rem; font-weight: 500; }
+        .tool-desc { color: #888; font-size: 0.8rem; margin-top: 8px; }
+        
+        .subsection-title {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin: 20px 0 10px;
+        }
+        
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px;
+            backdrop-filter: blur(10px);
+        }
+        nav a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+        nav a.active, nav a:hover { color: #f5576c; }
+        nav .nav-icon { font-size: 1.5rem; display: block; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🏮 风水工具</h1>
+        <p>精选实用风水工具</p>
+    </header>
+    
+    <div class="container">
+        <!-- 运势类 -->
+        <div class="section">
+            <h2 class="section-title">🔮 运势占卜</h2>
+            <div class="tools-grid">
+                <a href="/fortune/" class="tool-card">
+                    <div class="tool-icon">🔮</div>
+                    <div class="tool-name">今日运势</div>
+                    <div class="tool-desc">输入月份查运势</div>
+                </a>
+                <a href="/calendar/" class="tool-card">
+                    <div class="tool-icon">🗓️</div>
+                    <div class="tool-name">每日黄历</div>
+                    <div class="tool-desc">宜忌吉凶查询</div>
+                </a>
+                <a href="/zodiac/" class="tool-card">
+                    <div class="tool-icon">🌟</div>
+                    <div class="tool-name">生肖配对</div>
+                    <div class="tool-desc">属相相合相冲</div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- 趣味测试 -->
+        <div class="section" id="quiz-section">
+            <h2 class="section-title">🎮 趣味测试</h2>
+            
+            <h3 class="subsection-title">❤️ 情感系列</h3>
+            <div class="tools-grid">
+                <a href="/quiz.html?type=yuanfen" class="tool-card">
+                    <div class="tool-icon">💕</div>
+                    <div class="tool-name">缘分测试</div>
+                    <div class="tool-desc">你和TA的缘分配对</div>
+                </a>
+                <a href="/quiz.html?type=yuanfen" class="tool-card">
+                    <div class="tool-icon">😍</div>
+                    <div class="tool-name">ta有多喜欢你</div>
+                    <div class="tool-desc">测测TA的心意</div>
+                </a>
+                <a href="/quiz.html?type=yuanfen" class="tool-card">
+                    <div class="tool-icon">💑</div>
+                    <div class="tool-name">情侣默契</div>
+                    <div class="tool-desc">你们有多默契</div>
+                </a>
+            </div>
+            
+            <h3 class="subsection-title">🎭 性格系列</h3>
+            <div class="tools-grid">
+                <a href="/quiz.html?type=xingge" class="tool-card">
+                    <div class="tool-icon">🎭</div>
+                    <div class="tool-name">性格测试</div>
+                    <div class="tool-desc">你是哪种性格</div>
+                </a>
+                <a href="/quiz.html?type=xinlinianling" class="tool-card">
+                    <div class="tool-icon">😐</div>
+                    <div class="tool-name">心理年龄</div>
+                    <div class="tool-desc">测测你的心理年龄</div>
+                </a>
+                <a href="/quiz.html?type=xingge" class="tool-card">
+                    <div class="tool-icon">🎯</div>
+                    <div class="tool-name">职业性格</div>
+                    <div class="tool-desc">适合什么工作</div>
+                </a>
+            </div>
+            
+            <h3 class="subsection-title">🧐 面相系列</h3>
+            <div class="tools-grid">
+                <a href="#" class="tool-card" onclick="alert('即将上线')">
+                    <div class="tool-icon">🧐</div>
+                    <div class="tool-name">面相分析</div>
+                    <div class="tool-desc">AI看相准不准</div>
+                </a>
+                <a href="#" class="tool-card" onclick="alert('即将上线')">
+                    <div class="tool-icon">👀</div>
+                    <div class="tool-name">污力指数</div>
+                    <div class="tool-desc">你到底有多污</div>
+                </a>
+                <a href="#" class="tool-card" onclick="alert('即将上线')">
+                    <div class="tool-icon">🖐️</div>
+                    <div class="tool-name">手相测试</div>
+                    <div class="tool-desc">事业线感情线</div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- 实用工具 -->
+        <div class="section">
+            <h2 class="section-title">🛠️ 实用工具</h2>
+            <div class="tools-grid">
+                <a href="/name/" class="tool-card">
+                    <div class="tool-icon">🔢</div>
+                    <div class="tool-name">姓名评分</div>
+                    <div class="tool-desc">姓名吉凶分析</div>
+                </a>
+                <a href="/babyname/" class="tool-card">
+                    <div class="tool-icon">👶</div>
+                    <div class="tool-name">起名改名</div>
+                    <div class="tool-desc">宝宝名字推荐</div>
+                </a>
+                <a href="/messages/" class="tool-card">
+                    <div class="tool-icon">💬</div>
+                    <div class="tool-name">留言板</div>
+                    <div class="tool-desc">交流问答</div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- 服务预约 -->
+        <div class="section">
+            <h2 class="section-title">📞 服务预约</h2>
+            <div class="tools-grid">
+                <a href="#" class="tool-card" onclick="alert('请加微信咨询：yiyayiyayao')">
+                    <div class="tool-icon">📱</div>
+                    <div class="tool-name">微信咨询</div>
+                    <div class="tool-desc">添加微信详聊</div>
+                </a>
+                <a href="#" class="tool-card" onclick="alert('即将上线')">
+                    <div class="tool-icon">🎯</div>
+                    <div class="tool-name">预约看房</div>
+                    <div class="tool-desc">上门实地勘测</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <nav>
+        <a href="/">
+            <span class="nav-icon">🏠</span>
+            首页
+        </a>
+        <a href="/tools.html" class="active">
+            <span class="nav-icon">🔧</span>
+            工具
+        </a>
+        <a href="/messages/">
+            <span class="nav-icon">💬</span>
+            留言
+        </a>
+        <a href="/login.html">
+            <span class="nav-icon">👤</span>
+            我的
+        </a>
+    </nav>
+</body>
+</html>
