@@ -189,6 +189,9 @@
 | 2026-02-20 | OpenClaw MacOS客户端：菜单栏访问，支持MacOS 14+ |
 | 2026-02-20 | SkillsBench：写好Skills的7个原则 |
 | 2026-02-20 | OpenClaw源码教程：yeuxuan/openclaw-docs |
+| 2026-02-22 | PII过滤：正则+保护名单，自动拦截个人信息泄露（来自@ohxiyu） |
+| 2026-02-22 | PII误报6大坑：Snowflake ID/UUID/时间戳/浮点数/URL slug/身份证结构 |
+| 2026-02-22 | PII架构：审计+拦截分离，正则覆盖80%，NER处理剩余20% |
 
 ### OpenClaw源码教程（来自@yeuxuan的文档）
 - Track 0: 安装教程147篇
