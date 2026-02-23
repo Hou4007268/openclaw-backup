@@ -12,6 +12,36 @@ All credentials stored in `.credentials/` (gitignored):
 
 ---
 
+## VPS 服务器 (12zn.com)
+
+**⚠️ 重要：必须用 `ssh vps` 连接，不要用 root 或密码！**
+
+| 项目 | 值 |
+|------|------|
+| 快捷命令 | `ssh vps` |
+| IP | 124.156.176.155 |
+| 用户 | `ubuntu`（有 sudo 权限） |
+| 登录方式 | **SSH 密钥**（已配置在本地 ~/.ssh/config） |
+| 磁盘 | 40G |
+
+**正确用法：**
+```bash
+# 登录
+ssh vps
+
+# 远程执行命令
+ssh vps "命令"
+
+# 查看 nginx 日志
+ssh vps "tail -100 /var/log/nginx/access.log"
+```
+
+**❌ 错误用法（会失败）：**
+- `ssh root@124.156.176.155` — 用户名错误，不是 root
+- 用密码登录 — 只支持密钥认证
+
+---
+
 ## Cron Scheduler
 
 **Status:** ✅ Working
