@@ -91,10 +91,15 @@ memory/
 └── 2026-02-17.md     # L2: 原始日志
 ```
 
-### P0/P1/P2 生命周期
-- **P0**: 永久保留 (核心身份、配置)
-- **P1**: 90天归档 (经验总结、项目状态)
-- **P2**: 30天归档 (每日日志、临时任务)
+### P0/P1/P2 生命周期 + 置信度
+- **P0**: 永久保留 (核心身份、配置) - 置信度1.0，永不衰减
+- **P1**: 90天归档 (经验总结、项目状态) - 置信度0.85
+- **P2**: 30天归档 (每日日志、临时任务) - 置信度0.5，到期清除
+
+### 置信度机制 (2026-02-22)
+- 来源定价：手动确认=0.95，迁移=0.85，自动提取=0.5
+- 时间衰减：60天无访问开始衰减（×0.95/轮）
+- 访问增强：每次命中重置计时器，被频繁访问可提升置信度
 
 ### 检索流程
 1. 先读 `.abstract` 索引 (L0) → 定位主题
@@ -281,12 +286,9 @@ Don't wait for permission to improve. If you learned something, write it down no
 
 | 任务类型 | Skill/工具 |
 |----------|------------|
-| 写推文配图 | fengshui-illustrator（调 sdxl_gen.py --style twitter） |
-| 公众号封面/配图 | wechat-visual（调 sdxl_gen.py --style gzh-cover/wechat） |
-| 小红书配图 | xiaohongshu-visual（调 sdxl_gen.py --style xiaohongshu） |
-| 头像/Logo | ai-avatar-generator（调 sdxl_gen.py --style avatar） |
+| 写推文配图 | fengshui-illustrator |
 | 发推特 | twitter-publish |
-| 扒推文/查X数据 | @雷达（用 fetch_tweet.py） |
+| 扒推文/查X数据 | Camofox browser |
 | 写代码 | @小码 |
 | 发小红书笔记 | xiaohongshu-visual + xiaohongshu-writer |
 | 查天气 | weather skill |

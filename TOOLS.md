@@ -62,7 +62,6 @@ curl -s http://127.0.0.1:8000/queue > /dev/null && echo "✅ ComfyUI OK" || echo
 **已废弃：** `comfyui-generate.js`（用了 SD 1.5，已替换）、`gzh-cover-generator`（已并入 wechat-visual）
 
 ---
-
 ## Browser Automation
 
 **Status:** ✅ Working (Chrome extension connected)
@@ -81,13 +80,16 @@ cd ~/projects/camofox-browser && npm start
 - 端口：9377 (HTTP) / 18800 (CDP)
 - 状态检查：`curl http://127.0.0.1:9377/status`（注意：没有/status端日，直接看是否监听）
 
-**使用：**
-```bash
-# 自动选择Camofox
-browser action:open targetUrl:https://x.com/... 
+**Common Operations:**
+```
+# Open URL
+browser action:open targetUrl:https://x.com/... profile:chrome
 
-# 或指定profile
-browser action:open profile:openclaw targetUrl:https://x.com/...
+# Get page snapshot
+browser action:snapshot targetId:<id> compact:true
+
+# Click/type/fill
+browser action:act targetId:<id> request:{"kind":"click","ref":"e1"}
 ```
 
 **Gotchas:**
@@ -266,5 +268,5 @@ launchctl kickstart -k gui/$(id -u)/com.openclaw.aqua-serve
 - IDENTITY.md
 
 命令：
-~/.bun/install/global/node_modules/qmd/qmd sync 2>/dev/null || 
+~/.bun/install/global/node_modules/qmd/qmd sync 2>/dev/null ||
 cp ~/projects/openclaw-backup/{AGENTS,SOUL,USER,MEMORY,TOOLS,IDENTITY}.md ~/.openclaw/agents/main/agent/
