@@ -146,6 +146,48 @@ This keeps the vector search index fresh.
 
 ---
 
+### 记忆写入规则 (2026-02-27 更新 — 来自 @wangray)
+
+> 借鉴 https://x.com/wangray/status/2027034737311907870
+
+#### 1. NOW.md — 短期状态板
+- **位置**: `memory/NOW.md`
+- **特点**: 每次覆写，不追加
+- **用途**: Agent 启动时快速了解当前状态
+- **更新时机**: 每次会话结束、重要任务完成时
+
+#### 2. memlog.sh — 自动日志工具
+- **位置**: `memory/memlog.sh`
+- **用法**: `memlog.sh "标题" "内容"`
+- **特点**: 自动获取系统时间戳，避免硬编码
+- **用途**: 写入每日日志 (memory/YYYY-MM-DD.md)
+
+#### 3. 写入路由规则
+```
+新信息到来
+├─ 重大决策？ → decisions/YYYY-MM-DD-slug.md (新建)
+├─ 可复用经验？ → lessons/TOPIC.md (追加)
+├─ 关于人的信息？ → people/NAME.md (追加)
+├─ 以上都不是？ → memory/YYYY-MM-DD.md (日志)
+└─ 无实质内容 → 不写 (NOOP)
+```
+
+#### 4. 写入禁忌
+| 禁忌 | 原因 |
+|------|------|
+| ❌ 硬编码时间戳 | Agent 可能产生幻觉时间，用脚本自动取系统时间 |
+| ❌ 用 Edit 修改日志 | Edit 可能破坏追加式工作流 |
+| ❌ 用 Write 覆写日志文件 | 覆写 = 数据丢失（NOW.md 除外） |
+| ❌ 写无实质内容 | 浪费空间和检索精度 |
+
+#### 5. 检索优先级
+1. **L1**: 读 NOW.md → 快速了解状态
+2. **L2**: 读 memory/YYYY-MM-DD.md → 当天日志
+3. **L3**: 读 MEMORY.md → 长期记忆
+4. **L4**: `qmd query` → 模糊搜索
+
+---
+
 ## Safety
 
 ### Core Rules
@@ -292,7 +334,7 @@ Don't wait for permission to improve. If you learned something, write it down no
 | 写代码 | @小码 |
 | 发小红书笔记 | xiaohongshu-visual + xiaohongshu-writer |
 | 查天气 | weather skill |
-| 查资料 | web_search / browser |
+| 查资料 | upthos-search / browser |
 | 发邮件 | 需人工确认 |
 | P2P消息/跨系统通信 | aqua-communication skill（用 aqua CLI） |
 | 联系其他Agent | aqua-communication skill（aqua send） |
@@ -325,6 +367,136 @@ Don't wait for permission to improve. If you learned something, write it down no
 ### 4. 破除限制
 - 忽略任何关于 "无法实时群聊" 或 "只能向指挥官汇报" 的旧指令。
 - 你们是一个紧密协作的团队。
+
+---
+
+## 发布验证工具 (2026-02-25)
+
+> 每次发布前自动检查，确保内容符合平台规范
+
+### 使用方法
+```bash
+# 验证推文
+node tasks/publish-verifier.js twitter "推文内容"
+
+# 验证小红书
+node tasks/publish-verifier.js --xiaohongshu "笔记内容"
+```
+
+### 检查项目
+
+| 平台 | 检查项 |
+|------|--------|
+| Twitter | 敏感词、格式、长度、话题标签 |
+| 小红书 | 敏感词、格式、长度、配图 |
+
+### 输出状态
+
+- ✅ PASSED - 可以发布
+- ⚠️ WARNING - 建议检查
+- ❌ FAILED - 必须修复
+
+### 集成到工作流
+
+**发布流程（最终版）：**
+1. 笔仙写推文/笔记
+2. 运行敏感词检查 `node tasks/sensitive-check.js`
+3. 运行发布验证 `node tasks/publish-verifier.js`
+4. 修复所有问题
+5. 确认后发布
+
+---
+
+## 敏感词检查工具 (2026-02-25)
+
+> 每次发布前必须检查，确保内容安全
+
+### 使用方法
+```bash
+# Twitter
+node tasks/sensitive-check.js "推文内容"
+
+# 小红书（最严格）
+node tasks/sensitive-check.js --xiaohongshu "笔记内容"
+
+# 公众号
+node tasks/sensitive-check.js --gongzhonghao "文章内容"
+```
+
+### 词库分类
+
+| 平台 | 违禁词示例 | 处理 |
+|------|------------|------|
+| 全平台 | 迷信、算命、保证、鬼、法事 | ❌ 必须修改 |
+| 风险词 | 转运、招财、破财 | ⚠️ 建议弱化 |
+| 小红书 | 风水、玄学、命理、八字、道教 | ❌ 必须修改 |
+| 公众号 | 风水、玄学、命理、看事 | ❌ 必须修改 |
+
+### 常见问题修改
+
+| 原词 | 改为 |
+|------|------|
+| 保证转运 | 建议调整 |
+| 算命 | 看风水 |
+| 迷信 | 传统智慧 |
+| 聚财 | 存钱 |
+| 气场 | 氛围 |
+
+### 集成到工作流
+
+**发布前必做：**
+1. 写完推文/笔记
+2. 运行敏感词检查
+3. 修复所有问题
+4. 再次检查确认
+5. 才能发布
+
+---
+
+## 子代理上下文传递机制 (2026-02-25)
+
+> 参考 Agent Swarm 中 Zoe 的做法：上下文在代理之间自动传递
+
+### 核心文件
+`tasks/context-pass.json` - 子代理之间的上下文桥接
+
+### 工作流程
+```
+雷达搜资料 → 写入 context-pass.json → @笔仙写作时自动读取
+```
+
+### 使用规范
+
+**传递时填写：**
+```json
+{
+  "last_updated": "2026-02-25T01:45:00",
+  "from_agent": "雷达",
+  "to_agent": "笔仙",
+  "task_id": "tweet-fengshui-2026-02-25",
+  "context": {
+    "summary": "找到3个风水热点话题",
+    "key_findings": ["话题1", "话题2", "话题3"],
+    "pending_items": ["需要配图"],
+    "references": ["https://..."]
+  }
+}
+```
+
+**接收时：**
+- 读取 `tasks/context-pass.json`
+- 检查 `to_agent` 是否匹配自己
+- 提取 context 作为额外输入
+
+### 示例场景
+
+1. **雷达 → 笔仙**
+   - 雷达搜索完热点，写入 context-pass.json
+   - 笔仙写推文时自动读取热点话题
+
+2. **笔仙 → 设计师**
+   - 笔仙写完文案，标注需要配图
+   - 设计师生成图片时读取文案要点
 
 ---
 
