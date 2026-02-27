@@ -183,8 +183,54 @@ This keeps the vector search index fresh.
 #### 5. 检索优先级
 1. **L1**: 读 NOW.md → 快速了解状态
 2. **L2**: 读 memory/YYYY-MM-DD.md → 当天日志
-3. **L3**: 读 MEMORY.md → 长期记忆
+3. **L3**: 读 INDEX.md → 定位知识文件
 4. **L4**: `qmd query` → 模糊搜索
+
+#### 6. CRUD 验证（防记忆幻觉）
+> 写入知识文件（lessons/、people/、decisions/）前必须验证
+
+```
+准备写入 lessons/cron-discipline.md
+│ ├─ Step 1: 读取目标文件当前内容
+│ ├─ Step 2: 比较新知识与已有内容
+│ │ │
+│ │ ├─ 已有内容完全覆盖了新知识 → NOOP (跳过)
+│ │ │
+│ │ ├─ 新知识是对已有内容的更新 → UPDATE
+│ │ │ 旧版标记: > [Superseded 2026-02-26]
+│ │ │ 追加新版本
+│ │ │
+│ │ ├─ 新知识与已有内容矛盾 → CONFLICT
+│ │ │ 两版都保留，加标记: > ⚠️ CONFLICT (2026-02-26)
+│ │ │
+│ │ └─ 全新的知识 → ADD (追加新段落)
+│ │
+│ └─ Step 3: 更新 frontmatter 中的 last_verified 日期
+```
+
+**为什么需要CRUD验证？**
+- 防止记忆幻觉：Agent写入错误的、重复的、或矛盾的信息
+- 学术界称之为 HaluMem（Memory Hallucination）
+
+#### 7. 知识文件 Frontmatter 规范
+```yaml
+---
+title: "Cron 调度纪律"
+date: 2026-02-13
+category: lessons  # lessons | person | decision
+priority: 🔴       # 🔴 核心 | 🟡 重要 | ⚪ 参考
+status: active    # active | superseded | conflict
+last_verified: 2026-02-26
+tags: [cron, automation, reliability]
+---
+```
+
+**字段说明：**
+| 字段 | 用途 | 更新时机 |
+|------|------|----------|
+| priority | 检索排序和归档保护 | 创建时设定 |
+| status | 信息可信度标记 | CRUD验证时更新 |
+| last_verified | 过时检测 | 每次修改或确认时更新 |
 
 ---
 
