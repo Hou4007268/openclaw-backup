@@ -1,0 +1,169 @@
+# WEMP-PRO 配置文件
+# 微信自媒体专业运营套件
+
+# ==================== 微信配置 ====================
+wechat:
+  app_id: ${WECHAT_APP_ID}
+  app_secret: ${WECHAT_APP_SECRET}
+  # 公众号原始ID (gh_xxx)
+  original_id: ""
+  # 草稿箱分类
+  draft_category: "科技"
+
+# ==================== AI 配置 ====================
+ai:
+  # 默认使用的AI服务
+  provider: openai  # openai / anthropic / claude
+  
+  openai:
+    api_key: ${OPENAI_API_KEY}
+    model: gpt-4o
+    temperature: 0.7
+  
+  anthropic:
+    api_key: ${ANTHROPIC_API_KEY}
+    model: claude-sonnet-4-6
+    temperature: 0.7
+
+# ==================== 图片生成配置 ====================
+image:
+  # 图片生成服务
+  provider: sdxl  # sdxl / dall-e / midjourney
+  
+  sdxl:
+    api_key: ${IMAGE_API_KEY}
+    endpoint: "https://api.example.com/v1/generate"
+  
+  # 封面尺寸
+  cover:
+    width: 900
+    height: 500
+  
+  # 文中图尺寸
+  inline:
+    width: 700
+    height: auto
+
+# ==================== 数据采集配置 ====================
+sources:
+  # 热点榜单
+  hot:
+    - name: weibo
+      enabled: true
+      limit: 10
+    - name: zhihu
+      enabled: true
+      limit: 10
+    - name: baidu
+      enabled: true
+      limit: 10
+    - name: douyin
+      enabled: false
+      limit: 10
+    - name: bilibili
+      enabled: false
+      limit: 10
+    
+  # 竞品公众号
+  competitor:
+    - name: 混知
+      enabled: true
+      limit: 20
+    - name: 六神磊磊读金庸
+      enabled: true
+      limit: 20
+    - name: 虎嗅
+      enabled: true
+      limit: 15
+    - name: 36氪
+      enabled: true
+      limit: 15
+
+# ==================== 写作配置 ====================
+writing:
+  # 默认风格
+  default_style: 干货型
+  # 默认长度
+  default_length: 1500
+  # 去AI味强度
+  humanize_intensity: normal  # gentle / normal / strong
+  
+  # 风格说明
+  styles:
+    - name: 干货型
+      description: 专业、实用、有深度，适合技术/商业类文章
+    - name: 故事型
+      description: 叙事生动、情感丰富，适合个人经历分享
+    - name: 观点型
+      description: 犀利、有态度、敢说话，适合评论文章
+    - name: 清单型
+      description: 结构清晰、易于阅读，适合技巧汇总
+
+# ==================== 发布配置 ====================
+publish:
+  # 默认发布方式
+  default_action: draft  # draft / publish
+  
+  # 转换模式
+  convert_mode: api  # api / ai
+  
+  # 转换主题 (AI模式)
+  ai_theme: autumn-warm  # autumn-warm / spring-fresh / ocean-calm
+  
+  # API模式主题
+  api_theme: default  # default / bytedance / apple / sports / chinese / cyber
+  
+  # 发布时间建议
+  recommended_times:
+    - "07:30"
+    - "12:00"
+    - "18:00"
+    - "20:00"
+    - "21:30"
+
+# ==================== 互动配置 ====================
+comment:
+  # 自动回复开关
+  auto_reply: false
+  
+  # 回复模式
+  reply_mode: ai  # ai / template
+  
+  # 关键词自动回复模板
+  templates:
+    - keyword: "谢谢"
+      reply: "不客气！感谢你的支持~"
+    - keyword: "更新"
+      reply: "作者正在努力更新中，敬请期待！"
+
+# ==================== 数据分析配置 ====================
+analytics:
+  # 数据报告开关
+  daily_report: true
+  weekly_report: true
+  
+  # 报告发送时间
+  report_time: "09:00"
+  
+  # 对标账号
+  benchmark:
+    - 混知
+    - 六神磊磊读金庸
+    - 虎嗅
+
+# ==================== 定时任务 ====================
+scheduler:
+  # 热点采集
+  hot_collect:
+    enabled: true
+    cron: "0 */2 * * *"  # 每2小时
+  
+  # 日报生成
+  daily_report:
+    enabled: true
+    cron: "0 9 * * *"  # 每天9点
+  
+  # 竞品分析
+  competitor_analysis:
+    enabled: false
+    cron: "0 10 * * 1"  # 每周一10点
